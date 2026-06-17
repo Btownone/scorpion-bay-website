@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scorpion Bay Baja — Surf, Fishing, ATV & Adventure in San Juanico</title>
+  <meta name="description" content="The definitive guide to Scorpion Bay (San Juanico), Baja California Sur. Discover world-class surfing, fishing, ATV adventures, places to stay, local food, and book your next adventure." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Welcome to Scorpion Bay Baja" />
+  <meta property="og:description" content="Surfing, Fishing, Adventure, and Life on One of Baja's Most Legendary Coastlines." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet (free, no API key) for the interactive map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:      #07131c;   /* deep ocean night            */
+      --ink2:     #0a1a25;   /* alt night                   */
+      --surface:  #0f2533;   /* card surface                */
+      --surface2: #143140;   /* raised surface              */
+      --text:     #eaf4f7;   /* primary text                */
+      --mid:      #98b6c2;   /* secondary text              */
+      --dim:      #5d7e8c;   /* tertiary text               */
+      --gold:     #f0a73c;   /* Baja sunset (primary accent)*/
+      --gold-deep:#d8881d;
+      --aqua:     #2dd4bf;   /* ocean turquoise (secondary) */
+      --aqua-deep:#16a99a;
+      --line:     #1c3744;   /* hairline borders            */
+      --maxw: 1200px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--ink);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { max-width: 100%; display: block; }
+    a { color: inherit; }
+
+    .wrap { max-width: var(--maxw); margin: 0 auto; }
+
+    /* ─────────────── NAV ─────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 40px;
+      background: linear-gradient(to bottom, rgba(7,19,28,0.92) 0%, transparent 100%);
+      transition: background .3s, padding .3s, box-shadow .3s;
+    }
+    nav.scrolled {
+      background: rgba(7,19,28,0.97);
+      padding: 14px 40px;
+      box-shadow: 0 1px 0 var(--line);
+      backdrop-filter: blur(8px);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px; letter-spacing: 3px;
+      color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo .mark {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, var(--gold), var(--gold-deep));
+      box-shadow: 0 0 18px rgba(240,167,60,.5);
+      flex: none;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+    .nav-links a {
+      color: rgba(234,244,247,.72); text-decoration: none;
+      font-size: 12.5px; font-weight: 500; letter-spacing: 1.5px;
+      text-transform: uppercase; transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      background: var(--gold); color: var(--ink) !important;
+      padding: 11px 22px; border-radius: 2px;
+      font-weight: 700 !important; letter-spacing: 1.2px !important;
+      transition: transform .15s, box-shadow .2s;
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(240,167,60,.35); }
+    .nav-toggle { display: none; background: none; border: 0; color: var(--text); font-size: 26px; cursor: pointer; }
+
+    /* ─────────────── HERO ─────────────── */
+    #hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: flex-end; overflow: hidden;
+    }
+    .hero-media { position: absolute; inset: 0; z-index: 0; }
+    .hero-media video, .hero-media iframe, .hero-media img {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 100%; height: 100%; min-width: 100%; min-height: 100%;
+      object-fit: cover; pointer-events: none;
+    }
+    .hero-bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+    /* cinematic animated fallback gradient (shows if no video/photo yet) */
+    .hero-fallback {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(120% 80% at 70% 10%, rgba(240,167,60,.30), transparent 55%),
+        radial-gradient(120% 90% at 10% 90%, rgba(45,212,191,.22), transparent 55%),
+        linear-gradient(160deg, #0a1f2c 0%, #07131c 60%, #050d13 100%);
+      background-size: 200% 200%;
+      animation: drift 18s ease-in-out infinite alternate;
+    }
+    @keyframes drift { from { background-position: 0% 0%; } to { background-position: 100% 100%; } }
+    .hero-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(to bottom, rgba(7,19,28,.35) 0%, rgba(7,19,28,.15) 35%, rgba(7,19,28,.75) 80%, var(--ink) 100%);
+    }
+    .hero-content { position: relative; z-index: 2; padding: 0 40px 90px; max-width: 960px; margin: 0 auto; width: 100%; }
+    .hero-eyebrow {
+      font-size: 12px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 18px; display: flex; align-items: center; gap: 12px;
+    }
+    .hero-eyebrow::before { content: ""; width: 36px; height: 1px; background: var(--gold); }
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(56px, 9vw, 132px); line-height: .9; letter-spacing: 2px; margin-bottom: 22px;
+    }
+    .hero-title span { color: var(--gold); }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px); font-weight: 300; color: rgba(234,244,247,.82);
+      max-width: 600px; margin-bottom: 38px; line-height: 1.75;
+    }
+    .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
+    .scroll-hint {
+      position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 2;
+      color: var(--mid); font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: .8;
+    }
+    .scroll-hint .dot { width: 1px; height: 34px; background: linear-gradient(var(--gold), transparent); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity:.3; } 50% { opacity:1; } }
+
+    /* ─────────────── BUTTONS ─────────────── */
+    .btn-primary, .btn-secondary, .btn-ghost {
+      display: inline-block; padding: 15px 32px; border-radius: 2px;
+      font-size: 12.5px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase;
+      text-decoration: none; cursor: pointer; transition: transform .15s, box-shadow .2s, border-color .2s, color .2s, background .2s; border: 0;
+    }
+    .btn-primary { background: var(--gold); color: var(--ink); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(240,167,60,.35); }
+    .btn-secondary { border: 1px solid rgba(234,244,247,.35); color: var(--text); background: transparent; }
+    .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-ghost { background: var(--aqua); color: var(--ink); }
+    .btn-ghost:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(45,212,191,.3); }
+
+    /* ─────────────── STATS BAR ─────────────── */
+    .stats-bar {
+      background: var(--ink2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+      display: grid; grid-template-columns: repeat(4, 1fr);
+    }
+    .stat-item { padding: 36px 24px; text-align: center; border-right: 1px solid var(--line); }
+    .stat-item:last-child { border-right: none; }
+    .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 50px; color: var(--gold); line-height: 1; margin-bottom: 6px; }
+    .stat-label { font-size: 11.5px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--mid); font-weight: 500; }
+
+    /* ─────────────── SECTION SHELL ─────────────── */
+    section { padding: 110px 40px; }
+    .section-head { margin-bottom: 56px; max-width: 720px; }
+    .section-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+    .eyebrow {
+      font-size: 11px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--aqua); margin-bottom: 14px; display: inline-flex; align-items: center; gap: 10px;
+    }
+    .eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--aqua); }
+    .section-head.center .eyebrow::before { display: none; }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: clamp(38px, 5vw, 68px);
+      letter-spacing: 1.5px; line-height: 1; margin-bottom: 18px;
+    }
+    .section-sub { font-size: 17px; font-weight: 300; color: var(--mid); line-height: 1.8; }
+
+    /* ─────────────── HIGHLIGHTS ─────────────── */
+    #highlights { background: var(--ink); }
+    .highlight-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
+    .hl-card {
+      position: relative; overflow: hidden; border-radius: 4px; min-height: 320px;
+      display: flex; flex-direction: column; justify-content: flex-end; padding: 26px;
+      color: #fff; text-decoration: none; isolation: isolate;
+      border: 1px solid var(--line);
+    }
+    .hl-card:nth-child(1) { grid-column: span 3; }
+    .hl-card:nth-child(2) { grid-column: span 3; }
+    .hl-card:nth-child(3) { grid-column: span 2; }
+    .hl-card:nth-child(4) { grid-column: span 2; }
+    .hl-card:nth-child(5) { grid-column: span 2; }
+    .hl-bg { position: absolute; inset: 0; z-index: -2; background-size: cover; background-position: center; transition: transform .6s ease; }
+    .hl-card:hover .hl-bg { transform: scale(1.06); }
+    .hl-card::after {
+      content: ""; position: absolute; inset: 0; z-index: -1;
+      background: linear-gradient(to top, rgba(5,13,19,.92) 0%, rgba(5,13,19,.25) 55%, rgba(5,13,19,.1) 100%);
+      transition: background .3s;
+    }
+    .hl-card:hover::after { background: linear-gradient(to top, rgba(5,13,19,.95) 0%, rgba(5,13,19,.4) 70%, rgba(5,13,19,.2) 100%); }
+    .hl-icon { font-size: 26px; margin-bottom: 8px; }
+    .hl-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 1px; margin-bottom: 6px; }
+    .hl-card p { font-size: 14px; color: rgba(234,244,247,.82); font-weight: 300; }
+    .hl-card .tag { font-size: 10.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 10px; }
+
+    /* ─────────────── FEATURED BUSINESS ─────────────── */
+    .feature { background: var(--ink2); }
+    .feature.alt { background: var(--ink); }
+    .feature-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .feature-inner.flip .feature-media { order: 2; }
+    .feature-media { position: relative; border-radius: 6px; overflow: hidden; min-height: 460px; border: 1px solid var(--line); }
+    .feature-media .fm-main { position: absolute; inset: 0; background-size: cover; background-position: center; }
+    .feature-badge {
+      position: absolute; top: 18px; left: 18px; z-index: 2;
+      background: var(--gold); color: var(--ink); font-size: 11px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase; padding: 7px 14px; border-radius: 2px;
+    }
+    .feature h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(36px, 4.5vw, 60px); letter-spacing: 1px; line-height: 1; margin-bottom: 18px; }
+    .feature .lead { font-size: 17px; color: var(--mid); font-weight: 300; margin-bottom: 28px; line-height: 1.8; }
+
+    .option-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .option-row {
+      display: flex; justify-content: space-between; align-items: center; gap: 16px;
+      padding: 16px 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px;
+      transition: border-color .2s, transform .15s;
+    }
+    .option-row:hover { border-color: var(--gold); transform: translateX(3px); }
+    .option-row .o-name { font-weight: 600; font-size: 15px; }
+    .option-row .o-desc { font-size: 13px; color: var(--dim); }
+    .option-row .o-price { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--gold); white-space: nowrap; letter-spacing: .5px; }
+    .option-row .o-price small { font-family: 'Inter'; font-size: 11px; color: var(--dim); letter-spacing: 1px; }
+
+    .pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+    .pill { font-size: 12.5px; padding: 8px 14px; border-radius: 40px; border: 1px solid var(--line); background: var(--surface); color: var(--mid); }
+    .pill::before { content: "✓ "; color: var(--aqua); font-weight: 700; }
+
+    .safety-note {
+      display: flex; gap: 12px; align-items: flex-start; padding: 16px 18px;
+      background: rgba(45,212,191,.07); border: 1px solid rgba(45,212,191,.25); border-radius: 4px;
+      font-size: 13.5px; color: var(--mid); margin-bottom: 28px;
+    }
+    .safety-note .ico { color: var(--aqua); font-size: 18px; flex: none; }
+
+    /* ─────────────── INLINE FORM ─────────────── */
+    .lead-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .lead-form .full { grid-column: span 2; }
+    .lead-form input, .lead-form textarea, .lead-form select {
+      width: 100%; padding: 13px 14px; background: var(--surface); border: 1px solid var(--line);
+      border-radius: 4px; color: var(--text); font-family: inherit; font-size: 14px; transition: border-color .2s;
+    }
+    .lead-form input:focus, .lead-form textarea:focus, .lead-form select:focus { outline: none; border-color: var(--gold); }
+    .lead-form textarea { resize: vertical; min-height: 90px; }
+    .lead-form ::placeholder { color: var(--dim); }
+    .form-status { grid-column: span 2; font-size: 13px; color: var(--aqua); min-height: 18px; }
+
+    /* ─────────────── PARALLAX BANNER ─────────────── */
+    .parallax {
+      position: relative; min-height: 460px; display: flex; align-items: center; justify-content: center;
+      text-align: center; background-size: cover; background-position: center; background-attachment: fixed;
+      padding: 40px;
+    }
+    .parallax::after { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(7,19,28,.6), rgba(7,19,28,.78)); }
+    .parallax .pcontent { position: relative; z-index: 1; max-width: 760px; }
+    .parallax .peyebrow { color: var(--gold); letter-spacing: 4px; font-size: 12px; text-transform: uppercase; font-weight: 600; margin-bottom: 16px; }
+    .parallax h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(40px, 6vw, 84px); letter-spacing: 1.5px; line-height: .95; margin-bottom: 20px; }
+    .parallax p { font-size: 18px; color: rgba(234,244,247,.85); font-weight: 300; margin-bottom: 30px; }
+
+    /* ─────────────── DIRECTORY ─────────────── */
+    #directory { background: var(--ink2); }
+    .dir-tabs { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 44px; }
+    .dir-tab {
+      padding: 11px 22px; border-radius: 40px; border: 1px solid var(--line); background: var(--surface);
+      color: var(--mid); font-size: 13px; font-weight: 600; letter-spacing: .5px; cursor: pointer;
+      transition: all .2s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .dir-tab:hover { border-color: var(--gold); color: var(--text); }
+    .dir-tab.active { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+    .dir-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .dir-card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: 6px; overflow: hidden;
+      display: flex; flex-direction: column; transition: transform .2s, border-color .2s, box-shadow .2s;
+    }
+    .dir-card:hover { transform: translateY(-4px); border-color: var(--gold); box-shadow: 0 16px 40px rgba(0,0,0,.4); }
+    .dir-card .dc-img { height: 168px; background-size: cover; background-position: center; position: relative; }
+    .dir-card .dc-type {
+      position: absolute; top: 12px; left: 12px; background: rgba(7,19,28,.85); backdrop-filter: blur(4px);
+      color: var(--aqua); font-size: 10.5px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; padding: 5px 11px; border-radius: 40px;
+    }
+    .dir-card .dc-feat {
+      position: absolute; top: 12px; right: 12px; background: var(--gold); color: var(--ink);
+      font-size: 10px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; padding: 5px 10px; border-radius: 40px;
+    }
+    .dir-card .dc-body { padding: 18px 20px 22px; flex: 1; display: flex; flex-direction: column; }
+    .dir-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .dir-card .dc-desc { font-size: 13.5px; color: var(--mid); font-weight: 300; flex: 1; margin-bottom: 14px; }
+    .dir-card .dc-meta { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; color: var(--dim); }
+    .dir-card .dc-meta a { color: var(--aqua); text-decoration: none; }
+    .dir-card .dc-meta a:hover { text-decoration: underline; }
+    .dir-empty { text-align: center; color: var(--dim); padding: 40px; grid-column: 1/-1; }
+
+    /* ─────────────── MAP ─────────────── */
+    #map-section { background: var(--ink); }
+    .map-shell { display: grid; grid-template-columns: 300px 1fr; gap: 18px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+    .map-legend { background: var(--surface); padding: 24px 22px; max-height: 540px; overflow-y: auto; }
+    .map-legend h4 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; margin-bottom: 14px; color: var(--gold); }
+    .legend-item { display: flex; align-items: center; gap: 11px; padding: 9px 0; border-bottom: 1px solid var(--line); cursor: pointer; transition: padding .15s; }
+    .legend-item:last-child { border-bottom: none; }
+    .legend-item:hover { padding-left: 5px; }
+    .legend-item .pin-dot { width: 13px; height: 13px; border-radius: 50%; flex: none; box-shadow: 0 0 0 3px rgba(255,255,255,.08); }
+    .legend-item .li-name { font-size: 14px; font-weight: 500; }
+    .legend-item .li-cat { font-size: 11px; color: var(--dim); letter-spacing: .5px; }
+    #leaflet-map { height: 540px; width: 100%; background: var(--ink2); }
+    .leaflet-popup-content-wrapper { background: var(--surface2); color: var(--text); border-radius: 6px; }
+    .leaflet-popup-tip { background: var(--surface2); }
+    .leaflet-popup-content { margin: 12px 16px; font-family: 'Inter', sans-serif; }
+    .leaflet-popup-content b { color: var(--gold); }
+    .leaflet-container a.leaflet-popup-close-button { color: var(--mid); }
+
+    /* ─────────────── COMMUNITY ─────────────── */
+    #community { background: var(--ink2); }
+    .comm-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 56px; align-items: start; }
+    .comm-prose p { font-size: 16px; color: var(--mid); font-weight: 300; margin-bottom: 18px; line-height: 1.85; }
+    .comm-prose p strong { color: var(--text); font-weight: 600; }
+    .info-cards { display: flex; flex-direction: column; gap: 14px; }
+    .info-card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 22px; border-left: 3px solid var(--aqua); }
+    .info-card.gold { border-left-color: var(--gold); }
+    .info-card h4 { font-size: 15px; letter-spacing: .5px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .info-card p { font-size: 13.5px; color: var(--mid); font-weight: 300; }
+    .info-card .season-list { list-style: none; margin-top: 8px; }
+    .info-card .season-list li { font-size: 13px; color: var(--mid); padding: 4px 0; display: flex; justify-content: space-between; border-bottom: 1px dashed var(--line); }
+    .info-card .season-list li:last-child { border-bottom: none; }
+    .info-card .season-list span { color: var(--aqua); font-weight: 600; }
+
+    /* ─────────────── FINAL CTA / FOOTER ─────────────── */
+    #join { background: var(--ink); text-align: center; }
+    .join-box {
+      max-width: 760px; margin: 0 auto; background: linear-gradient(150deg, var(--surface), var(--ink2));
+      border: 1px solid var(--line); border-radius: 10px; padding: 56px 40px;
+    }
+    .join-box h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(34px, 4.5vw, 56px); letter-spacing: 1px; margin-bottom: 16px; }
+    .join-box p { font-size: 17px; color: var(--mid); font-weight: 300; margin-bottom: 30px; }
+
+    footer { background: var(--ink2); border-top: 1px solid var(--line); padding: 56px 40px 32px; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+    .footer-col h5 { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+    .footer-col a, .footer-col p { display: block; color: var(--mid); text-decoration: none; font-size: 14px; margin-bottom: 9px; font-weight: 300; transition: color .2s; }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-brand .nav-logo { margin-bottom: 14px; font-size: 26px; }
+    .footer-brand p { max-width: 320px; }
+    .footer-bottom { border-top: 1px solid var(--line); padding-top: 24px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 12.5px; color: var(--dim); }
+    .footer-bottom a { color: var(--aqua); text-decoration: none; }
+
+    /* ─────────────── REVEAL ANIMATION ─────────────── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ─────────────── EDIT MODE ─────────────── */
+    #edit-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 3000; display: none;
+      background: var(--gold); color: var(--ink); padding: 12px 20px; align-items: center; gap: 16px;
+      font-size: 13px; font-weight: 600; box-shadow: 0 -4px 20px rgba(0,0,0,.4);
+    }
+    body.editing #edit-bar { display: flex; }
+    #edit-bar button { background: var(--ink); color: var(--gold); border: 0; padding: 8px 16px; border-radius: 3px; font-weight: 700; cursor: pointer; letter-spacing: .5px; }
+    #edit-bar button.ghost { background: rgba(7,19,28,.15); color: var(--ink); border: 1px solid rgba(7,19,28,.35); }
+    #edit-bar .spacer { flex: 1; }
+    body.editing [data-edit] { outline: 1px dashed rgba(240,167,60,.6); outline-offset: 3px; cursor: text; border-radius: 2px; }
+    body.editing [data-edit]:hover { outline-color: var(--gold); background: rgba(240,167,60,.08); }
+    body.editing [data-img] { cursor: pointer; }
+    body.editing [data-img]::before {
+      content: "📷 click to change photo"; position: absolute; top: 8px; right: 8px; z-index: 5;
+      background: rgba(7,19,28,.85); color: var(--gold); font-size: 11px; padding: 4px 9px; border-radius: 3px; pointer-events: none;
+    }
+
+    /* ─────────────── RESPONSIVE ─────────────── */
+    @media (max-width: 980px) {
+      .feature-inner, .comm-grid { grid-template-columns: 1fr; gap: 36px; }
+      .feature-inner.flip .feature-media { order: 0; }
+      .feature-media { min-height: 320px; }
+      .map-shell { grid-template-columns: 1fr; }
+      .map-legend { max-height: none; }
+      .highlight-grid { grid-template-columns: repeat(2, 1fr); }
+      .hl-card, .hl-card:nth-child(n) { grid-column: span 1; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 720px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .nav-toggle { display: block; }
+      nav.open .nav-links {
+        display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0;
+        background: rgba(7,19,28,.98); padding: 24px; gap: 20px; border-bottom: 1px solid var(--line);
+      }
+      section { padding: 80px 20px; }
+      .hero-content { padding: 0 20px 70px; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .stat-item:nth-child(2) { border-right: none; }
+      .stat-item:nth-child(1), .stat-item:nth-child(2) { border-bottom: 1px solid var(--line); }
+      .highlight-grid { grid-template-columns: 1fr; }
+      .lead-form { grid-template-columns: 1fr; }
+      .lead-form .full, .form-status { grid-column: span 1; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+      .parallax { background-attachment: scroll; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════ NAV ═══════════════ -->
+  <nav id="nav">
+    <a href="#hero" class="nav-logo"><span class="mark"></span>SCORPION&nbsp;<span>BAY</span></a>
+    <ul class="nav-links">
+      <li><a href="#highlights">Explore</a></li>
+      <li><a href="#atv">ATV Rentals</a></li>
+      <li><a href="#storage">Storage</a></li>
+      <li><a href="#directory">Directory</a></li>
+      <li><a href="#map-section">Map</a></li>
+      <li><a href="#community">Community</a></li>
+      <li><a href="#join" class="nav-cta">Plan Your Trip</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+  </nav>
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <section id="hero">
+    <div class="hero-media" id="heroMedia">
+      <div class="hero-fallback"></div>
+      <!-- Zachary: drop your hero video/photo via SITE.hero in the script below -->
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow" data-edit="hero-eyebrow">San Juanico · Baja California Sur</div>
+      <h1 class="hero-title" data-edit="hero-title">Welcome to <span>Scorpion Bay</span></h1>
+      <p class="hero-sub" data-edit="hero-sub">Discover surfing, fishing, adventure, and life on one of Baja's most legendary coastlines.</p>
+      <div class="hero-buttons">
+        <a href="#highlights" class="btn-primary">Explore Activities</a>
+        <a href="#atv" class="btn-secondary">Book Adventures</a>
+      </div>
+    </div>
+    <div class="scroll-hint"><span class="dot"></span>Scroll</div>
+  </section>
+
+  <!-- ═══════════════ STATS ═══════════════ -->
+  <div class="stats-bar" id="statsBar"></div>
+
+  <!-- ═══════════════ HIGHLIGHTS ═══════════════ -->
+  <section id="highlights">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Local Highlights</span>
+        <h2 class="section-title">Everything Scorpion Bay</h2>
+        <p class="section-sub">From world-famous point breaks to desert trails and fresh-caught seafood — here's what makes San Juanico unforgettable.</p>
+      </div>
+      <div class="highlight-grid reveal" id="highlightGrid"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FEATURED: ATV RENTALS ═══════════════ -->
+  <section id="atv" class="feature">
+    <div class="wrap feature-inner reveal">
+      <div class="feature-media">
+        <div class="fm-main" id="atvMedia" data-img="atv-hero"></div>
+        <span class="feature-badge">Our Business</span>
+      </div>
+      <div>
+        <span class="eyebrow">Scorpion Bay ATV Rentals</span>
+        <h2 data-edit="atv-title">Explore Baja On Four Wheels</h2>
+        <p class="lead" data-edit="atv-lead">Ride pristine beaches, desert trails, and hidden viewpoints. Our well-maintained fleet is ready for riders of every level — from first-timers to backcountry explorers.</p>
+
+        <div class="option-list" id="atvOptions"></div>
+        <div class="pill-row" id="atvIncludes"></div>
+
+        <div class="safety-note">
+          <span class="ico">⛑️</span>
+          <span data-edit="atv-safety">Helmets, safety briefing, and trail map included with every rental. Valid driver's license required. Guided tours available for groups.</span>
+        </div>
+
+        <h4 style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;margin-bottom:14px;">Reserve Your ATV Today</h4>
+        <form class="lead-form" data-form="ATV Rental Inquiry">
+          <input name="name" placeholder="Your name" required />
+          <input name="phone" placeholder="Phone / WhatsApp" required />
+          <input class="full" name="email" type="email" placeholder="Email" required />
+          <input name="dates" placeholder="Dates (e.g. Mar 12–14)" />
+          <input name="riders" type="number" min="1" placeholder="# of riders" />
+          <textarea class="full" name="message" placeholder="Which package? Any questions?"></textarea>
+          <button class="btn-primary full" type="submit">Reserve Your ATV →</button>
+          <div class="form-status"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ PARALLAX BANNER ═══════════════ -->
+  <div class="parallax" id="parallax1">
+    <div class="pcontent reveal">
+      <div class="peyebrow">One Coastline. Endless Adventure.</div>
+      <h2 data-edit="parallax-title">Where the Desert Meets the Sea</h2>
+      <p data-edit="parallax-sub">Five world-class point breaks, untouched beaches, and some of the warmest people in Baja.</p>
+      <a href="#directory" class="btn-primary">Browse the Directory</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════ FEATURED: STORAGE ═══════════════ -->
+  <section id="storage" class="feature alt">
+    <div class="wrap feature-inner flip reveal">
+      <div class="feature-media">
+        <div class="fm-main" id="storageMedia" data-img="storage-hero"></div>
+        <span class="feature-badge">Our Business</span>
+      </div>
+      <div>
+        <span class="eyebrow">Scorpion Bay Storage</span>
+        <h2 data-edit="storage-title">Secure Storage, Year-Round Peace of Mind</h2>
+        <p class="lead" data-edit="storage-lead">Whether you're storing a vehicle for the season, a boat, surfboards, or gear between trips — keep it safe, secure, and ready for your next Baja adventure.</p>
+
+        <div class="option-list" id="storageOptions"></div>
+        <div class="pill-row" id="storageIncludes"></div>
+
+        <h4 style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;margin-bottom:14px;">Request Availability</h4>
+        <form class="lead-form" data-form="Storage Availability Request">
+          <input name="name" placeholder="Your name" required />
+          <input name="phone" placeholder="Phone / WhatsApp" required />
+          <input class="full" name="email" type="email" placeholder="Email" required />
+          <select name="type">
+            <option value="">What are you storing?</option>
+            <option>Vehicle / Truck</option>
+            <option>Boat / Trailer</option>
+            <option>Surfboards / Gear</option>
+            <option>Seasonal / Other</option>
+          </select>
+          <input name="duration" placeholder="How long?" />
+          <textarea class="full" name="message" placeholder="Tell us what you need to store"></textarea>
+          <button class="btn-ghost full" type="submit">Request Availability →</button>
+          <div class="form-status"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ DIRECTORY ═══════════════ -->
+  <section id="directory">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Tourism Directory</span>
+        <h2 class="section-title">Find Your Way Around San Juanico</h2>
+        <p class="section-sub">Local businesses, vetted and ready to welcome you. Filter by what you're looking for.</p>
+      </div>
+      <div class="dir-tabs reveal" id="dirTabs"></div>
+      <div class="dir-grid reveal" id="dirGrid"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ INTERACTIVE MAP ═══════════════ -->
+  <section id="map-section">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Interactive Map</span>
+        <h2 class="section-title">Everything On The Map</h2>
+        <p class="section-sub">Surf spots, our ATV & storage locations, hotels, restaurants, and boat launches — all in one place.</p>
+      </div>
+      <div class="map-shell reveal">
+        <div class="map-legend" id="mapLegend">
+          <h4>Points of Interest</h4>
+        </div>
+        <div id="leaflet-map"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ COMMUNITY ═══════════════ -->
+  <section id="community">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">The Community</span>
+        <h2 class="section-title">Life In Scorpion Bay</h2>
+      </div>
+      <div class="comm-grid reveal">
+        <div class="comm-prose" data-edit="community-prose">
+          <p><strong>San Juanico</strong> — known to surfers worldwide as Scorpion Bay — is a remote fishing village on the Pacific coast of Baja California Sur. For decades it was a closely-guarded secret among surfers willing to make the long drive down dust roads for its legendary right-hand point breaks.</p>
+          <p>Today it's a tight-knit community of locals, fishermen, expats, and travelers drawn by the same things: <strong>warm water, empty waves, star-filled skies, and a slower way of life.</strong> The town runs on solar power and good vibes, with taco stands, palapa bars, and family-run hotels that treat every visitor like an old friend.</p>
+          <p>Whether you come to surf the points, chase yellowtail offshore, rip across the desert on a quad, or simply watch the sunset with a cold drink — Scorpion Bay has a way of making you want to stay just a little longer.</p>
+        </div>
+        <div class="info-cards">
+          <div class="info-card gold">
+            <h4>🏄 Surf Report</h4>
+            <p data-edit="surf-report">Best swells April–October (SW groundswell). Five points hold size from knee-high cruisers to overhead walls. Morning offshores are the local secret.</p>
+          </div>
+          <div class="info-card">
+            <h4>🎣 Fishing Seasons</h4>
+            <ul class="season-list" id="fishSeasons"></ul>
+          </div>
+          <div class="info-card gold">
+            <h4>📅 Events & Season</h4>
+            <p data-edit="events">Peak season runs Nov–May. The annual surf gatherings light up the points each summer. Ask any local — the calendar is written in swells and full moons.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ JOIN / CTA ═══════════════ -->
+  <section id="join">
+    <div class="join-box reveal">
+      <span class="eyebrow" style="justify-content:center;">For Local Businesses</span>
+      <h2 data-edit="join-title">Own a Business in Scorpion Bay?</h2>
+      <p data-edit="join-sub">Get listed in the directory, reach every visitor planning a trip, and turn your spot into the first place they find. Featured listings available.</p>
+      <form class="lead-form" data-form="Business Listing Request" style="max-width:520px;margin:0 auto;text-align:left;">
+        <input name="business" class="full" placeholder="Business name" required />
+        <input name="name" placeholder="Your name" required />
+        <input name="phone" placeholder="Phone / WhatsApp" required />
+        <input class="full" name="email" type="email" placeholder="Email" required />
+        <textarea class="full" name="message" placeholder="Tell us about your business"></textarea>
+        <button class="btn-primary full" type="submit">List My Business →</button>
+        <div class="form-status"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer>
+    <div class="wrap">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <a href="#hero" class="nav-logo"><span class="mark"></span>SCORPION&nbsp;<span>BAY</span></a>
+          <p>The definitive guide to Scorpion Bay (San Juanico), Baja California Sur. Surf · Fish · Ride · Explore.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Explore</h5>
+          <a href="#highlights">Activities</a>
+          <a href="#directory">Places to Stay</a>
+          <a href="#directory">Food &amp; Drink</a>
+          <a href="#map-section">Map</a>
+        </div>
+        <div class="footer-col">
+          <h5>Our Businesses</h5>
+          <a href="#atv">ATV Rentals</a>
+          <a href="#storage">Storage</a>
+          <a href="#join">List Your Business</a>
+        </div>
+        <div class="footer-col">
+          <h5>Get In Touch</h5>
+          <a id="footPhone" href="#">WhatsApp</a>
+          <a id="footEmail" href="#">Email Us</a>
+          <a id="footInsta" href="#" target="_blank" rel="noopener">Instagram</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> Scorpion Bay Baja. All rights reserved.</span>
+        <span>Built on the <a href="https://blueoceanstandard.com" target="_blank" rel="noopener">Blue Ocean Standard</a> tourism platform.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════ EDIT BAR ═══════════════ -->
+  <div id="edit-bar">
+    <span>✏️ Edit mode — click any text or photo to change it</span>
+    <span class="spacer"></span>
+    <button id="editSave">Save changes</button>
+    <button class="ghost" id="editReset">Reset all</button>
+    <button class="ghost" id="editExit">Exit</button>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+  /* ════════════════════════════════════════════════════════════════════════
+     SCORPION BAY — CONTENT TEMPLATE
+     ────────────────────────────────────────────────────────────────────────
+     This single object drives the whole site. To launch a NEW town from this
+     template, copy index.html and edit only this SITE object: swap the name,
+     coordinates, businesses, directory listings, and map pins. Everything else
+     re-renders automatically. (See CLAUDE.md for the full playbook.)
+     ════════════════════════════════════════════════════════════════════════ */
+  const SITE = {
+    name: "Scorpion Bay",
+    town: "San Juanico, Baja California Sur",
+
+    // ── Contact (used in footer + form fallbacks) ────────────────────────
+    contact: {
+      whatsapp: "+52 000 000 0000",   // TODO Zachary: your number
+      email:    "hello@scorpionbaybaja.com",
+      instagram:"https://instagram.com/",
+    },
+
+    // Where lead forms are sent. Paste a Formspree (or similar) endpoint here.
+    // If left blank, forms gracefully fall back to opening the visitor's email
+    // client pre-filled to SITE.contact.email — so they always work.
+    formEndpoint: "",
+
+    // ── HERO MEDIA ───────────────────────────────────────────────────────
+    // Set ONE of these. Leave all blank to show the animated cinematic gradient.
+    hero: {
+      videoMp4: "",                                  // e.g. "https://.../scorpion-reel.mp4"
+      youtubeId: "",                                 // e.g. "dQw4w9WgXcQ" (muted bg loop)
+      image: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?q=80&w=2000", // surf/ocean placeholder
+    },
+
+    // ── STATS BAR ────────────────────────────────────────────────────────
+    stats: [
+      { num: "5",    label: "Point Breaks" },
+      { num: "300+", label: "Days of Sun" },
+      { num: "70°F", label: "Water Temp" },
+      { num: "∞",    label: "Adventure" },
+    ],
+
+    // ── LOCAL HIGHLIGHTS ─────────────────────────────────────────────────
+    highlights: [
+      { icon:"🏄", tag:"Surf",     title:"World-Class Surfing", desc:"Famous right-hand point breaks and endless rides.", img:"https://images.unsplash.com/photo-1455729552865-3658a5d39692?q=80&w=1400", link:"#community" },
+      { icon:"🎣", tag:"Fish",     title:"Offshore Fishing",    desc:"Yellowtail, tuna, dorado, and deep-sea adventures.", img:"https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1400", link:"#community" },
+      { icon:"🏍️", tag:"Ride",     title:"ATV Adventures",      desc:"Beaches, desert trails, and hidden viewpoints.",      img:"https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1400", link:"#atv" },
+      { icon:"🌮", tag:"Eat",      title:"Local Food",          desc:"Taco stands, palapa bars, and fresh seafood.",        img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1400", link:"#directory" },
+      { icon:"🏝️", tag:"Stay",     title:"Places to Stay",      desc:"Hotels, rentals, RV parks, and beach camping.",       img:"https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1400", link:"#directory" },
+    ],
+
+    // ── BUSINESS: ATV RENTALS ────────────────────────────────────────────
+    atv: {
+      image: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1600",
+      options: [
+        { name:"Single Rider Quad",   desc:"Automatic, beginner-friendly", price:"$65",  unit:"/ day" },
+        { name:"2-Up Quad",           desc:"Ride with a passenger",        price:"$85",  unit:"/ day" },
+        { name:"Side-by-Side (4-seat)",desc:"The whole family / crew",     price:"$160", unit:"/ day" },
+        { name:"Guided Desert Tour",  desc:"3 hrs · guide + viewpoints",   price:"$95",  unit:"/ person" },
+      ],
+      includes: ["Helmet & goggles", "Safety briefing", "Trail map", "Fuel to start", "Free local delivery"],
+    },
+
+    // ── BUSINESS: STORAGE ────────────────────────────────────────────────
+    storage: {
+      image: "https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=1600",
+      options: [
+        { name:"Vehicle / Truck",    desc:"Secure lot, seasonal-friendly", price:"$90",  unit:"/ month" },
+        { name:"Boat & Trailer",     desc:"Outdoor secured spot",          price:"$120", unit:"/ month" },
+        { name:"Surfboard / Gear",   desc:"Indoor locker, climate-shaded", price:"$35",  unit:"/ month" },
+        { name:"Seasonal Package",   desc:"6-month, pay upfront & save",   price:"$480", unit:"/ 6 mo" },
+      ],
+      includes: ["Gated & monitored", "24/7 access", "On-site caretaker", "Flexible terms", "Long-term discounts"],
+    },
+
+    // ── TOURISM DIRECTORY ────────────────────────────────────────────────
+    // categories drive the filter tabs; each listing has a `cat` matching one.
+    dirCategories: [
+      { key:"all",      label:"All",              icon:"◎" },
+      { key:"stay",     label:"Places to Stay",   icon:"🏝️" },
+      { key:"food",     label:"Food & Drink",     icon:"🌮" },
+      { key:"activity", label:"Activities",       icon:"🏄" },
+      { key:"service",  label:"Essential Services",icon:"🛠️" },
+    ],
+    listings: [
+      { cat:"stay", type:"Hotel", name:"Scorpion Bay Hotel", desc:"Clean rooms steps from the points, with the town's best palapa restaurant.", img:"https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1200", featured:true, phone:"", web:"" },
+      { cat:"stay", type:"Camping / RV", name:"Point Break RV & Camping", desc:"Beachfront sites, fire pits, and front-row sunset seats.", img:"https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1200", phone:"", web:"" },
+      { cat:"stay", type:"Rental", name:"Casa del Mar (Vacation Rental)", desc:"Private 3-bedroom casa with ocean views and a full kitchen.", img:"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200", phone:"", web:"" },
+      { cat:"food", type:"Restaurant", name:"Taco Stand El Punto", desc:"Legendary fish tacos and cold cervezas right by the first point.", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200", featured:true, phone:"", web:"" },
+      { cat:"food", type:"Bar", name:"Palapa Sunset Bar", desc:"Margaritas, live music, and the best sunset view in town.", img:"https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1200", phone:"", web:"" },
+      { cat:"food", type:"Café", name:"Desert Bean Coffee", desc:"Espresso, smoothies, and breakfast burritos for dawn patrol.", img:"https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=1200", phone:"", web:"" },
+      { cat:"activity", type:"ATV Rentals", name:"Scorpion Bay ATV Rentals", desc:"Quads, side-by-sides & guided desert tours. (That's us!)", img:"https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1200", featured:true, phone:"", web:"#atv" },
+      { cat:"activity", type:"Fishing Charter", name:"Panga Fishing Charters", desc:"Half & full-day offshore trips for yellowtail, tuna & dorado.", img:"https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1200", phone:"", web:"" },
+      { cat:"activity", type:"Surf Lessons", name:"San Juanico Surf School", desc:"Lessons & board rentals for every level, from first wave up.", img:"https://images.unsplash.com/photo-1502933691298-84fc14542831?q=80&w=1200", phone:"", web:"" },
+      { cat:"service", type:"Storage", name:"Scorpion Bay Storage", desc:"Secure vehicle, boat & gear storage year-round. (Also us!)", img:"https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=1200", featured:true, phone:"", web:"#storage" },
+      { cat:"service", type:"Mechanic", name:"Baja Auto & Quad Repair", desc:"Tires, oil, welding, and ATV repair to keep you rolling.", img:"https://images.unsplash.com/photo-1632823469850-2f77dd9c7f93?q=80&w=1200", phone:"", web:"" },
+      { cat:"service", type:"Grocery", name:"Mini Súper San Juanico", desc:"Water, ice, produce, and the essentials for your stay.", img:"https://images.unsplash.com/photo-1604719312566-8912e9227c6a?q=80&w=1200", phone:"", web:"" },
+    ],
+
+    // ── MAP ──────────────────────────────────────────────────────────────
+    map: {
+      center: [26.2553, -112.4769],   // San Juanico / Scorpion Bay
+      zoom: 14,
+    },
+    // color groups for pins
+    pinColors: { surf:"#2dd4bf", ours:"#f0a73c", stay:"#a78bfa", food:"#f87171", service:"#60a5fa", launch:"#34d399" },
+    pins: [
+      { name:"Scorpion Bay ATV Rentals", cat:"Our Business", group:"ours", coords:[26.2560,-112.4750] },
+      { name:"Scorpion Bay Storage",     cat:"Our Business", group:"ours", coords:[26.2576,-112.4731] },
+      { name:"First Point",              cat:"Surf Spot",    group:"surf", coords:[26.2520,-112.4805] },
+      { name:"Second Point",            cat:"Surf Spot",    group:"surf", coords:[26.2505,-112.4828] },
+      { name:"Third Point",             cat:"Surf Spot",    group:"surf", coords:[26.2488,-112.4852] },
+      { name:"Scorpion Bay Hotel",      cat:"Stay",         group:"stay", coords:[26.2548,-112.4762] },
+      { name:"Taco Stand El Punto",     cat:"Food",         group:"food", coords:[26.2540,-112.4770] },
+      { name:"Panga Boat Launch",       cat:"Boat Launch",  group:"launch", coords:[26.2532,-112.4788] },
+    ],
+
+    // ── COMMUNITY: fishing seasons ───────────────────────────────────────
+    fishSeasons: [
+      { fish:"Yellowtail", when:"Nov – Apr" },
+      { fish:"Dorado (Mahi)", when:"Jul – Oct" },
+      { fish:"Tuna", when:"Jun – Nov" },
+      { fish:"Halibut & Corvina", when:"Year-round" },
+    ],
+  };
+
+  /* ════════════════════════════════════════════════════════════════════════
+     RENDER
+     ════════════════════════════════════════════════════════════════════════ */
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  /* ─── EDITABLE STATE (shared by render + editor) ─────────────────────────
+     Everything visible is editable in ?edit=1: text via contenteditable,
+     photos via click-to-replace. Edits persist in localStorage and are
+     re-applied for visitors of that browser. */
+  const EDIT_KEY = 'scorpionbay-edits-v1';
+  const saved = JSON.parse(localStorage.getItem(EDIT_KEY) || '{}');
+  const EDITING = new URLSearchParams(location.search).has('edit');
+  const persist = () => localStorage.setItem(EDIT_KEY, JSON.stringify(saved));
+  function setImg(el, url){
+    if (!el) return;
+    const grad = el.classList.contains('hl-bg') || el.classList.contains('fm-main');
+    el.style.backgroundImage = grad
+      ? `linear-gradient(135deg,rgba(240,167,60,.12),rgba(45,212,191,.12)),url('${url}')`
+      : `url('${url}')`;
+  }
+  // restore saved edits + (if editing) make a region's text contenteditable
+  function hydrate(root){
+    root.querySelectorAll('[data-edit]').forEach(el => {
+      const v = saved['t:'+el.dataset.edit];
+      if (v != null) el.innerHTML = v;
+      if (EDITING) el.setAttribute('contenteditable', 'true');
+    });
+    root.querySelectorAll('[data-img]').forEach(el => {
+      const v = saved['i:'+el.dataset.img];
+      if (v) setImg(el, v);
+    });
+  }
+
+  // ---- Hero media ----
+  (function heroMedia(){
+    const m = $('#heroMedia'); const h = SITE.hero;
+    let node = '';
+    if (h.videoMp4) node = `<video autoplay muted loop playsinline poster="${esc(h.image||'')}"><source src="${esc(h.videoMp4)}" type="video/mp4"></video>`;
+    else if (h.youtubeId) node = `<iframe src="https://www.youtube.com/embed/${esc(h.youtubeId)}?autoplay=1&mute=1&loop=1&playlist=${esc(h.youtubeId)}&controls=0&showinfo=0&modestbranding=1" allow="autoplay" frameborder="0"></iframe>`;
+    else if (h.image) node = `<div class="hero-bg" data-img="hero" style="background-image:url('${esc(h.image)}')"></div>`;
+    if (node) m.insertAdjacentHTML('beforeend', node);
+  })();
+
+  // ---- Stats ----
+  $('#statsBar').innerHTML = SITE.stats.map((s,i) =>
+    `<div class="stat-item"><div class="stat-num" data-edit="stat-${i}-num">${esc(s.num)}</div><div class="stat-label" data-edit="stat-${i}-label">${esc(s.label)}</div></div>`
+  ).join('');
+
+  // ---- Highlights ----
+  $('#highlightGrid').innerHTML = SITE.highlights.map((h,i) => `
+    <a class="hl-card" href="${esc(h.link||'#')}">
+      <div class="hl-bg" data-img="hl-${i}" style="background-image:linear-gradient(rgba(7,19,28,.1),rgba(7,19,28,.1)),url('${esc(h.img)}')"></div>
+      <div class="hl-icon" data-edit="hl-${i}-icon">${h.icon}</div>
+      <div class="tag" data-edit="hl-${i}-tag">${esc(h.tag)}</div>
+      <h3 data-edit="hl-${i}-title">${esc(h.title)}</h3>
+      <p data-edit="hl-${i}-desc">${esc(h.desc)}</p>
+    </a>`).join('');
+
+  // ---- ATV + Storage media & options ----
+  setImg($('#atvMedia'), SITE.atv.image);
+  setImg($('#storageMedia'), SITE.storage.image);
+
+  const optHTML = (o,i,pfx) => `
+    <div class="option-row">
+      <div><div class="o-name" data-edit="${pfx}-opt-${i}-name">${esc(o.name)}</div><div class="o-desc" data-edit="${pfx}-opt-${i}-desc">${esc(o.desc)}</div></div>
+      <div class="o-price" data-edit="${pfx}-opt-${i}-price">${esc(o.price)} <small>${esc(o.unit)}</small></div>
+    </div>`;
+  const pillHTML = (p,i,pfx) => `<span class="pill" data-edit="${pfx}-pill-${i}">${esc(p)}</span>`;
+  $('#atvOptions').innerHTML     = SITE.atv.options.map((o,i)=>optHTML(o,i,'atv')).join('');
+  $('#atvIncludes').innerHTML    = SITE.atv.includes.map((p,i)=>pillHTML(p,i,'atv')).join('');
+  $('#storageOptions').innerHTML = SITE.storage.options.map((o,i)=>optHTML(o,i,'stor')).join('');
+  $('#storageIncludes').innerHTML= SITE.storage.includes.map((p,i)=>pillHTML(p,i,'stor')).join('');
+
+  // ---- Parallax background ----
+  $('#parallax1').style.backgroundImage = `url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2000')`;
+
+  // ---- Directory ----
+  let activeCat = 'all';
+  $('#dirTabs').innerHTML = SITE.dirCategories.map(c =>
+    `<button class="dir-tab ${c.key==='all'?'active':''}" data-cat="${c.key}"><span>${c.icon}</span>${esc(c.label)}</button>`
+  ).join('');
+  function renderDir(){
+    const grid = $('#dirGrid');
+    const items = SITE.listings.map((l,idx)=>({l,idx})).filter(x => activeCat==='all' || x.l.cat===activeCat);
+    if (!items.length){ grid.innerHTML = `<div class="dir-empty">No listings yet — be the first! Scroll down to add your business.</div>`; return; }
+    grid.innerHTML = items.map(({l,idx}) => {
+      const phone = l.phone ? `<span>📞 <a href="tel:${esc(l.phone)}">${esc(l.phone)}</a></span>` : '';
+      const web = l.web ? `<span>🔗 <a href="${esc(l.web)}">Visit</a></span>` : '';
+      return `<div class="dir-card">
+        <div class="dc-img" data-img="dir-${idx}" style="background-image:url('${esc(l.img)}')">
+          <span class="dc-type" data-edit="dir-${idx}-type">${esc(l.type)}</span>
+          ${l.featured?'<span class="dc-feat">★ Featured</span>':''}
+        </div>
+        <div class="dc-body">
+          <h3 data-edit="dir-${idx}-name">${esc(l.name)}</h3>
+          <p class="dc-desc" data-edit="dir-${idx}-desc">${esc(l.desc)}</p>
+          <div class="dc-meta">${phone}${web}</div>
+        </div>
+      </div>`;
+    }).join('');
+    hydrate(grid);   // restore saved edits + re-enable editing after each (re)render
+  }
+  $('#dirTabs').addEventListener('click', e => {
+    const t = e.target.closest('.dir-tab'); if(!t) return;
+    activeCat = t.dataset.cat;
+    $$('.dir-tab').forEach(b => b.classList.toggle('active', b===t));
+    renderDir();
+  });
+  renderDir();
+
+  // ---- Fishing seasons ----
+  $('#fishSeasons').innerHTML = SITE.fishSeasons.map((f,i) =>
+    `<li><span data-edit="fish-${i}-name" style="color:var(--text);font-weight:500">${esc(f.fish)}</span> <span data-edit="fish-${i}-when">${esc(f.when)}</span></li>`
+  ).join('');
+
+  // ---- Footer contact ----
+  $('#year').textContent = '2026';
+  const c = SITE.contact;
+  const waNum = c.whatsapp.replace(/[^\d]/g,'');
+  $('#footPhone').href = waNum ? `https://wa.me/${waNum}` : '#';
+  $('#footPhone').textContent = c.whatsapp || 'WhatsApp';
+  $('#footEmail').href = `mailto:${c.email}`;
+  $('#footEmail').textContent = c.email || 'Email Us';
+  $('#footInsta').href = c.instagram || '#';
+
+  /* ════════════════════════════════════════════════════════════════════════
+     INTERACTIVE MAP (Leaflet + CARTO dark tiles — no API key needed)
+     ════════════════════════════════════════════════════════════════════════ */
+  (function initMap(){
+    if (typeof L === 'undefined') return;
+    const map = L.map('leaflet-map', { scrollWheelZoom:false }).setView(SITE.map.center, SITE.map.zoom);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains:'abcd', maxZoom:19
+    }).addTo(map);
+
+    const markers = {};
+    SITE.pins.forEach((p, i) => {
+      const color = SITE.pinColors[p.group] || '#f0a73c';
+      const icon = L.divIcon({ className:'', html:`<div style="width:18px;height:18px;border-radius:50%;background:${color};border:2px solid #07131c;box-shadow:0 0 0 2px ${color}66, 0 2px 6px rgba(0,0,0,.5)"></div>`, iconSize:[18,18], iconAnchor:[9,9] });
+      const m = L.marker(p.coords, { icon }).addTo(map).bindPopup(`<b>${esc(p.name)}</b><br>${esc(p.cat)}`);
+      markers[i] = m;
+    });
+
+    // Legend
+    const legend = $('#mapLegend');
+    legend.insertAdjacentHTML('beforeend', SITE.pins.map((p,i) => {
+      const color = SITE.pinColors[p.group] || '#f0a73c';
+      return `<div class="legend-item" data-i="${i}">
+        <span class="pin-dot" style="background:${color}"></span>
+        <div><div class="li-name">${esc(p.name)}</div><div class="li-cat">${esc(p.cat)}</div></div>
+      </div>`;
+    }).join(''));
+    legend.addEventListener('click', e => {
+      const it = e.target.closest('.legend-item'); if(!it) return;
+      const i = +it.dataset.i; map.setView(SITE.pins[i].coords, 16); markers[i].openPopup();
+    });
+  })();
+
+  /* ════════════════════════════════════════════════════════════════════════
+     FORMS — POST to formEndpoint, else mailto fallback (always works)
+     ════════════════════════════════════════════════════════════════════════ */
+  $$('form[data-form]').forEach(form => {
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const status = form.querySelector('.form-status');
+      const data = Object.fromEntries(new FormData(form).entries());
+      const subject = form.dataset.form + ' — ' + SITE.name;
+      if (status) status.textContent = 'Sending…';
+      if (SITE.formEndpoint) {
+        try {
+          const res = await fetch(SITE.formEndpoint, { method:'POST', headers:{'Accept':'application/json'}, body:new FormData(form) });
+          if (res.ok) { if(status) status.textContent='✓ Thank you! We\'ll be in touch shortly.'; form.reset(); return; }
+        } catch(_) {}
+      }
+      // fallback: open email client pre-filled
+      const body = Object.entries(data).map(([k,v]) => `${k}: ${v}`).join('%0D%0A');
+      window.location.href = `mailto:${SITE.contact.email}?subject=${encodeURIComponent(subject)}&body=${body}`;
+      if (status) status.textContent = '✓ Opening your email to send…';
+    });
+  });
+
+  /* ════════════════════════════════════════════════════════════════════════
+     NAV — scroll state + mobile menu
+     ════════════════════════════════════════════════════════════════════════ */
+  const nav = $('#nav');
+  addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40));
+  $('#navToggle').addEventListener('click', () => nav.classList.toggle('open'));
+  $$('.nav-links a').forEach(a => a.addEventListener('click', () => nav.classList.remove('open')));
+
+  /* ════════════════════════════════════════════════════════════════════════
+     SCROLL REVEAL
+     ════════════════════════════════════════════════════════════════════════ */
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => { if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+  }, { threshold: 0.12 });
+  $$('.reveal').forEach(el => io.observe(el));
+
+  /* ════════════════════════════════════════════════════════════════════════
+     INLINE EDIT MODE  (?edit=1)  — full in-page editor. Click ANY text to type,
+     click ANY photo to swap it. Saves locally. Echoes the BOS v3 demo editor.
+     ════════════════════════════════════════════════════════════════════════ */
+  // Restore saved edits everywhere + (if editing) turn on contenteditable.
+  // renderDir() already hydrated the directory grid; this covers the rest.
+  hydrate(document);
+
+  function changeImg(el){
+    if (!el) return;
+    const url = prompt('Paste an image URL for this photo:', '');
+    if (!url) return;
+    setImg(el, url);
+    saved['i:'+el.dataset.img] = url;
+    persist();
+  }
+
+  if (EDITING) {
+    document.body.classList.add('editing');
+
+    // Keep saved text in sync live, so switching directory tabs never loses edits.
+    document.addEventListener('input', e => {
+      const el = e.target.closest('[data-edit]');
+      if (el) saved['t:'+el.dataset.edit] = el.innerHTML;
+    });
+
+    // Click handling while editing (capture phase so we beat link navigation).
+    document.addEventListener('click', e => {
+      // Highlight cards are <a> — never navigate while editing; click photo area to swap.
+      const card = e.target.closest('.hl-card');
+      if (card) {
+        e.preventDefault();
+        if (!e.target.closest('[data-edit]')) changeImg(card.querySelector('.hl-bg'));
+        return;
+      }
+      // Any other photo (directory, ATV/storage) — click to swap.
+      const img = e.target.closest('[data-img]');
+      if (img && !e.target.closest('[data-edit]')) { e.preventDefault(); changeImg(img); }
+      // Hero photo sits behind the overlay — click empty hero area (not text/buttons) to swap.
+      const hero = e.target.closest('#hero');
+      if (hero && !img && !e.target.closest('[data-edit]') && !e.target.closest('a')) {
+        const bg = hero.querySelector('[data-img="hero"]');
+        if (bg) { e.preventDefault(); changeImg(bg); }
+      }
+    }, true);
+
+    $('#editSave').addEventListener('click', () => {
+      $$('[data-edit]').forEach(el => { saved['t:'+el.dataset.edit] = el.innerHTML; });
+      persist();
+      const b = $('#editSave'), t = b.textContent;
+      b.textContent = '✓ Saved!'; setTimeout(() => b.textContent = t, 1500);
+    });
+    $('#editReset').addEventListener('click', () => {
+      if (confirm('Reset all edits back to the original template?')) { localStorage.removeItem(EDIT_KEY); location.href = location.pathname; }
+    });
+    $('#editExit').addEventListener('click', () => { location.href = location.pathname; });
+  }
+  </script>
+</body>
+</html>
