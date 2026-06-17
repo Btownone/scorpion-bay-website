@@ -310,6 +310,28 @@
     .dir-card .dc-meta a { color: var(--aqua); text-decoration: none; }
     .dir-card .dc-meta a:hover { text-decoration: underline; }
     .dir-empty { text-align: center; color: var(--dim); padding: 40px; grid-column: 1/-1; }
+    .dir-card .dc-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+    .dir-card .dc-price { font-size: 12.5px; font-weight: 700; color: var(--gold); white-space: nowrap; }
+    .dc-btn { display: inline-block; margin-top: 14px; width: 100%; text-align: center; background: var(--gold); color: var(--ink); border: 0; padding: 11px 16px; border-radius: 4px; font-size: 12.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: transform .15s, box-shadow .2s; }
+    .dc-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(240,167,60,.3); }
+    .dc-btn.ghost { background: transparent; color: var(--aqua); border: 1px solid var(--line); }
+    .dc-btn.ghost:hover { border-color: var(--aqua); box-shadow: none; }
+    .dc-promo { margin-top: 14px; font-size: 12.5px; color: var(--aqua); font-weight: 600; }
+
+    /* ─────────────── MODALS (booking + terms) ─────────────── */
+    .modal-overlay { position: fixed; inset: 0; z-index: 2000; background: rgba(4,10,15,.78); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+    .modal-overlay[hidden] { display: none; }
+    .modal { position: relative; width: 100%; max-width: 520px; background: linear-gradient(150deg, var(--surface), var(--ink2)); border: 1px solid var(--line); border-radius: 10px; padding: 32px; margin: auto; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+    .modal-x { position: absolute; top: 14px; right: 16px; background: none; border: 0; color: var(--mid); font-size: 26px; line-height: 1; cursor: pointer; transition: color .2s; }
+    .modal-x:hover { color: var(--gold); }
+    .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 1px; line-height: 1; margin-bottom: 8px; }
+    .modal-sub { font-size: 14px; color: var(--mid); margin-bottom: 20px; font-weight: 300; }
+    .tos-row { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--mid); line-height: 1.5; }
+    .tos-row input { width: 18px; height: 18px; flex: none; margin-top: 1px; accent-color: var(--gold); }
+    .tos-row a { color: var(--aqua); }
+    .tos-body { max-height: 50vh; overflow-y: auto; margin-bottom: 22px; padding-right: 6px; }
+    .tos-body p { font-size: 13.5px; color: var(--mid); line-height: 1.7; margin-bottom: 12px; font-weight: 300; }
+    .tos-body p:first-child { color: var(--text); font-weight: 500; }
 
     /* ─────────────── MAP ─────────────── */
     #map-section { background: var(--ink); }
@@ -489,13 +511,14 @@
         </div>
 
         <h4 style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;margin-bottom:14px;">Reserve Your ATV Today</h4>
-        <form class="lead-form" data-form="ATV Rental Inquiry">
+        <form class="lead-form" data-form="ATV Rental Inquiry" data-paylink="atv">
           <input name="name" placeholder="Your name" required />
           <input name="phone" placeholder="Phone / WhatsApp" required />
           <input class="full" name="email" type="email" placeholder="Email" required />
           <input name="dates" placeholder="Dates (e.g. Mar 12–14)" />
           <input name="riders" type="number" min="1" placeholder="# of riders" />
           <textarea class="full" name="message" placeholder="Which package? Any questions?"></textarea>
+          <label class="tos-row full"><input type="checkbox" name="tos" required /> <span>I have read and agree to the <a href="#" data-tos>Terms &amp; Liability Waiver</a>.</span></label>
           <button class="btn-primary full" type="submit">Reserve Your ATV →</button>
           <div class="form-status"></div>
         </form>
@@ -508,7 +531,7 @@
     <div class="pcontent reveal">
       <div class="peyebrow">One Coastline. Endless Adventure.</div>
       <h2 data-edit="parallax-title">Where the Desert Meets the Sea</h2>
-      <p data-edit="parallax-sub">Five world-class point breaks, untouched beaches, and some of the warmest people in Baja.</p>
+      <p data-edit="parallax-sub">Four world-class right point breaks, untouched beaches, and some of the warmest people in Baja.</p>
       <a href="#directory" class="btn-primary">Browse the Directory</a>
     </div>
   </div>
@@ -529,7 +552,7 @@
         <div class="pill-row" id="storageIncludes"></div>
 
         <h4 style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;margin-bottom:14px;">Request Availability</h4>
-        <form class="lead-form" data-form="Storage Availability Request">
+        <form class="lead-form" data-form="Storage Availability Request" data-paylink="storage">
           <input name="name" placeholder="Your name" required />
           <input name="phone" placeholder="Phone / WhatsApp" required />
           <input class="full" name="email" type="email" placeholder="Email" required />
@@ -542,6 +565,7 @@
           </select>
           <input name="duration" placeholder="How long?" />
           <textarea class="full" name="message" placeholder="Tell us what you need to store"></textarea>
+          <label class="tos-row full"><input type="checkbox" name="tos" required /> <span>I have read and agree to the <a href="#" data-tos>Terms</a>.</span></label>
           <button class="btn-ghost full" type="submit">Request Availability →</button>
           <div class="form-status"></div>
         </form>
@@ -595,7 +619,7 @@
         <div class="info-cards">
           <div class="info-card gold">
             <h4>🏄 Surf Report</h4>
-            <p data-edit="surf-report">Best swells April–October (SW groundswell). Five points hold size from knee-high cruisers to overhead walls. Morning offshores are the local secret.</p>
+            <p data-edit="surf-report">Best on summer south swells (roughly May–September). Four right points — First (mellow), Second (most consistent), Third (fast & hollow) and Fourth (bigger) — can link for rides over a minute. Sheltered from the NW wind.</p>
           </div>
           <div class="info-card">
             <h4>🎣 Fishing Seasons</h4>
@@ -603,7 +627,7 @@
           </div>
           <div class="info-card gold">
             <h4>📅 Events & Season</h4>
-            <p data-edit="events">Peak season runs Nov–May. The annual surf gatherings light up the points each summer. Ask any local — the calendar is written in swells and full moons.</p>
+            <p data-edit="events">Surf season peaks in summer; winter is quieter and great for fishing & quad trips. Come prepared: the town is cash-only (no ATM), there's no Pemex (gas sold in town) and no full medical — fill up and stock up on the way in.</p>
           </div>
         </div>
       </div>
@@ -663,6 +687,38 @@
     </div>
   </footer>
 
+  <!-- ═══════════════ BOOKING MODAL ═══════════════ -->
+  <div id="bookModal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="bookTitle">
+      <button class="modal-x" id="bookClose" aria-label="Close">×</button>
+      <span class="eyebrow" style="margin-bottom:10px">Reserve</span>
+      <h3 class="modal-title" id="bookTitle">Reserve</h3>
+      <p class="modal-sub" id="bookSub"></p>
+      <form id="bookForm" class="lead-form">
+        <input name="name" placeholder="Full name" required />
+        <input name="phone" placeholder="Phone / WhatsApp" required />
+        <input class="full" name="email" type="email" placeholder="Email" required />
+        <input name="dates" placeholder="Preferred date(s)" />
+        <input name="people" type="number" min="1" placeholder="# people / units" />
+        <textarea class="full" name="notes" placeholder="Which option? Anything we should know?"></textarea>
+        <label class="tos-row full"><input type="checkbox" name="tos" required /> <span>I have read and agree to the <a href="#" data-tos>Terms &amp; Liability Waiver</a>.</span></label>
+        <button class="btn-primary full" id="bookSubmit" type="submit">Request to Book →</button>
+        <div class="form-status full"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TERMS / WAIVER MODAL ═══════════════ -->
+  <div id="tosModal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tosTitle">
+      <button class="modal-x" id="tosClose" aria-label="Close">×</button>
+      <span class="eyebrow" style="margin-bottom:10px">Please read</span>
+      <h3 class="modal-title" id="tosTitle">Terms &amp; Liability Waiver</h3>
+      <div class="tos-body" id="tosBody"></div>
+      <button class="btn-primary full" id="tosOk" type="button">Got it</button>
+    </div>
+  </div>
+
   <!-- ═══════════════ EDIT BAR ═══════════════ -->
   <div id="edit-bar">
     <span>✏️ Edit mode — click any text or photo to change it</span>
@@ -688,7 +744,7 @@
 
     // ── Contact (used in footer + form fallbacks) ────────────────────────
     contact: {
-      whatsapp: "+52 000 000 0000",   // TODO Zachary: your number
+      whatsapp: "+52 000 000 0000",   // TODO Zach: your number
       email:    "hello@scorpionbaymexico.com",
       instagram:"https://instagram.com/",
     },
@@ -697,6 +753,33 @@
     // If left blank, forms gracefully fall back to opening the visitor's email
     // client pre-filled to SITE.contact.email — so they always work.
     formEndpoint: "",
+
+    // ── BOOKINGS & PAYMENTS ──────────────────────────────────────────────
+    // Where booking requests are emailed (Bernardo to confirm the inbox).
+    // Falls back to contact.email until set.
+    booking: {
+      email: "",                       // TODO: booking inbox (Bernardo will provide)
+      // Per-business Stripe Payment Link slots — paste the link from Zach's
+      // Stripe dashboard and "Reserve & Pay" sends the customer straight to a
+      // secure Stripe checkout (money lands in Zach's account). Blank = the
+      // booking form just emails the request to book.email for manual follow-up.
+      payLinks: {
+        atv: "",                       // Scorpion Bay Quad Rentals
+        storage: "",                   // Scorpion Bay Storage
+        fishing: "",                   // panga fishing (our markup)
+        surf: "",                      // surf / board lessons (our markup)
+      },
+      // Terms / liability waiver shown + accepted before any paid booking.
+      // ⚠️ DRAFT — Zach/Bernardo must have a lawyer finalize before taking ATV money.
+      tos: [
+        "By booking you agree to the following. This is a plain-language summary of the rental & activity terms — a full waiver is signed in person at check-in.",
+        "Assumption of risk: ATV/quad riding, surfing, fishing and off-road activities carry inherent risks of injury or death. You participate voluntarily and at your own risk.",
+        "Eligibility: drivers must be 18+ with a valid license; helmets are mandatory; no riding under the influence of alcohol or drugs.",
+        "Responsibility: you are responsible for damage to equipment caused by misuse, and for following all guide instructions and local laws.",
+        "Cancellations: free up to 48 hours before your reservation; inside 48 hours deposits are non-refundable. Weather/safety cancellations by us are fully refunded.",
+        "Release of liability: to the extent permitted by law, you release the operator and Scorpion Bay Mexico from claims arising from participation.",
+      ],
+    },
 
     // ── HERO MEDIA ───────────────────────────────────────────────────────
     // Set ONE of these. Leave all blank to show the animated cinematic gradient.
@@ -708,23 +791,24 @@
 
     // ── STATS BAR ────────────────────────────────────────────────────────
     stats: [
-      { num: "5",    label: "Point Breaks" },
-      { num: "300+", label: "Days of Sun" },
-      { num: "70°F", label: "Water Temp" },
-      { num: "∞",    label: "Adventure" },
+      { num: "4",      label: "Right Point Breaks" },
+      { num: "May–Sep", label: "Best Surf Season" },
+      { num: "3.5 hr", label: "From Loreto Airport" },
+      { num: "100%",   label: "Off-Grid Adventure" },
     ],
 
     // ── LOCAL HIGHLIGHTS ─────────────────────────────────────────────────
     highlights: [
-      { icon:"🏄", tag:"Surf",     title:"World-Class Surfing", desc:"Famous right-hand point breaks and endless rides.", img:"https://images.unsplash.com/photo-1455729552865-3658a5d39692?q=80&w=1400", link:"#community" },
-      { icon:"🎣", tag:"Fish",     title:"Offshore Fishing",    desc:"Yellowtail, tuna, dorado, and deep-sea adventures.", img:"https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1400", link:"#community" },
-      { icon:"🏍️", tag:"Ride",     title:"ATV Adventures",      desc:"Beaches, desert trails, and hidden viewpoints.",      img:"https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1400", link:"#atv" },
-      { icon:"🌮", tag:"Eat",      title:"Local Food",          desc:"Taco stands, palapa bars, and fresh seafood.",        img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1400", link:"#directory" },
-      { icon:"🏝️", tag:"Stay",     title:"Places to Stay",      desc:"Hotels, rentals, RV parks, and beach camping.",       img:"https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1400", link:"#directory" },
+      { icon:"🏄", tag:"Surf",     title:"World-Class Point Breaks", desc:"Four right-hand points — long summer rides that can link for over a minute.", img:"https://images.unsplash.com/photo-1455729552865-3658a5d39692?q=80&w=1400", link:"#community" },
+      { icon:"🎣", tag:"Fish",     title:"Panga Fishing",    desc:"Yellowtail, dorado, tuna & corvina with local fishermen out of the bay.", img:"https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1400", link:"#directory" },
+      { icon:"🏍️", tag:"Ride",     title:"Quad & ATV Adventures",      desc:"Beaches, desert trails, the fingers & the rivermouth on four wheels.",      img:"https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1400", link:"#atv" },
+      { icon:"🌮", tag:"Eat",      title:"Tacos & Cantinas",          desc:"Fish tacos, cold cervezas and the legendary surf-camp cantinas.",        img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1400", link:"#directory" },
+      { icon:"🏝️", tag:"Stay",     title:"Places to Stay",      desc:"The Surf Hotel, the Cantina & Campground, casas and beach camping.",       img:"https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1400", link:"#directory" },
     ],
 
-    // ── BUSINESS: ATV RENTALS ────────────────────────────────────────────
+    // ── BUSINESS: ATV RENTALS (Zach's — Scorpion Bay Storage & Quad Rentals) ──
     atv: {
+      payLinkKey: "atv",   // → booking.payLinks.atv (Stripe). Blank = email the request.
       image: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1600",
       options: [
         { name:"Single Rider Quad",   desc:"Automatic, beginner-friendly", price:"$65",  unit:"/ day" },
@@ -735,8 +819,9 @@
       includes: ["Helmet & goggles", "Safety briefing", "Trail map", "Fuel to start", "Free local delivery"],
     },
 
-    // ── BUSINESS: STORAGE ────────────────────────────────────────────────
+    // ── BUSINESS: STORAGE (Zach's — Scorpion Bay Storage & Quad Rentals) ──
     storage: {
+      payLinkKey: "storage",
       image: "https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=1600",
       options: [
         { name:"Vehicle / Truck",    desc:"Secure lot, seasonal-friendly", price:"$90",  unit:"/ month" },
@@ -756,45 +841,58 @@
       { key:"activity", label:"Activities",       icon:"🏄" },
       { key:"service",  label:"Essential Services",icon:"🛠️" },
     ],
+    // tier: "book" = bookable · "promo" = free local promo · "info" = listed only
+    // ours: true = our booking flow (waiver + we take payment/markup)
+    // book: external booking/site URL (for places we just link to)
     listings: [
-      { cat:"stay", type:"Hotel", name:"Scorpion Bay Hotel", desc:"Clean rooms steps from the points, with the town's best palapa restaurant.", img:"https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1200", featured:true, phone:"", web:"" },
-      { cat:"stay", type:"Camping / RV", name:"Point Break RV & Camping", desc:"Beachfront sites, fire pits, and front-row sunset seats.", img:"https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1200", phone:"", web:"" },
-      { cat:"stay", type:"Rental", name:"Casa del Mar (Vacation Rental)", desc:"Private 3-bedroom casa with ocean views and a full kitchen.", img:"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200", phone:"", web:"" },
-      { cat:"food", type:"Restaurant", name:"Taco Stand El Punto", desc:"Legendary fish tacos and cold cervezas right by the first point.", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200", featured:true, phone:"", web:"" },
-      { cat:"food", type:"Bar", name:"Palapa Sunset Bar", desc:"Margaritas, live music, and the best sunset view in town.", img:"https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1200", phone:"", web:"" },
-      { cat:"food", type:"Café", name:"Desert Bean Coffee", desc:"Espresso, smoothies, and breakfast burritos for dawn patrol.", img:"https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=1200", phone:"", web:"" },
-      { cat:"activity", type:"ATV Rentals", name:"Scorpion Bay ATV Rentals", desc:"Quads, side-by-sides & guided desert tours. (That's us!)", img:"https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1200", featured:true, phone:"", web:"#atv" },
-      { cat:"activity", type:"Fishing Charter", name:"Panga Fishing Charters", desc:"Half & full-day offshore trips for yellowtail, tuna & dorado.", img:"https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1200", phone:"", web:"" },
-      { cat:"activity", type:"Surf Lessons", name:"San Juanico Surf School", desc:"Lessons & board rentals for every level, from first wave up.", img:"https://images.unsplash.com/photo-1502933691298-84fc14542831?q=80&w=1200", phone:"", web:"" },
-      { cat:"service", type:"Storage", name:"Scorpion Bay Storage", desc:"Secure vehicle, boat & gear storage year-round. (Also us!)", img:"https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=1200", featured:true, phone:"", web:"#storage" },
-      { cat:"service", type:"Mechanic", name:"Baja Auto & Quad Repair", desc:"Tires, oil, welding, and ATV repair to keep you rolling.", img:"https://images.unsplash.com/photo-1632823469850-2f77dd9c7f93?q=80&w=1200", phone:"", web:"" },
-      { cat:"service", type:"Grocery", name:"Mini Súper San Juanico", desc:"Water, ice, produce, and the essentials for your stay.", img:"https://images.unsplash.com/photo-1604719312566-8912e9227c6a?q=80&w=1200", phone:"", web:"" },
+      // ── STAY (promote + link to their own booking) ──
+      { cat:"stay", type:"Hotel", name:"Scorpion Bay Surf Hotel", desc:"In-town boutique hotel & cantina — rooms, casitas & bunkhouses, A/C, Wi-Fi, breakfast. Arranges surf & fishing.", img:"https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1200", featured:true, tier:"book", price:"Rooms from $104", phone:"+52 613-104-2067", web:"https://www.scorpionbayhotel.com/", book:"https://hotels.cloudbeds.com/reservation/jD10qt" },
+      { cat:"stay", type:"Campground & Cantina", name:"Scorpion Bay Cantina & Campground", desc:"The classic surf camp on the bluff over Second Point — camping, palapas, rooms & the town's social hub.", img:"https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1200", tier:"book", price:"Camping from 200 MXN", web:"http://www.scorpionbay.net/", book:"http://www.scorpionbay.net/accommodations" },
+      { cat:"stay", type:"Bungalows", name:"Casa Venezia — Scorpion Bay Bungalows", desc:"Solar-powered bungalows with Starlink Wi-Fi, kitchen & dog-friendly — the quiet high side of the village.", img:"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200", tier:"book", web:"https://www.casaveneziasanjuanico.com/", book:"https://www.casaveneziasanjuanico.com/" },
+      { cat:"stay", type:"Vacation Rentals", name:"Casas de San Juanico", desc:"Studio to 4-bedroom casas for rent around town — La Casita, Casa Hermosa, Casa Theresa & more.", img:"https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1200", tier:"book", web:"https://casasdesanjuanico.com/", book:"https://casasdesanjuanico.com/" },
+
+      // ── FOOD & DRINK (free promo — we love these) ──
+      { cat:"food", type:"Taco Bar & Surf Shop", name:"El Burro en Primavera", desc:"Open-air surfer hangout — grilled fish, shrimp tacos & burgers, hammocks, and boards to rent, buy or trade.", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200", featured:true, tier:"promo" },
+      { cat:"food", type:"Cantina & Bar", name:"Scorpion Bay Cantina", desc:"Breakfast to dinner at the campground — fish tacos, burrito de papas & cold beers with a Second Point view.", img:"https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1200", tier:"promo", web:"http://www.scorpionbay.net/" },
+      { cat:"food", type:"Taco Stand", name:"Tacos Cristy", desc:"Local hole-in-the-wall for tacos, tortas & burritos — cheap, tasty and full of locals.", img:"https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=1200", tier:"promo" },
+
+      // ── ACTIVITIES (ours = we book + take payment / markup) ──
+      { cat:"activity", type:"Quad & ATV Rentals", name:"Scorpion Bay Quad Rentals", desc:"Quads & side-by-sides to ride the beaches, fingers & rivermouth — single, 2-up, family & guided tours.", img:"https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1200", featured:true, tier:"book", ours:true, payLinkKey:"atv", price:"From $65 / day", web:"#atv" },
+      { cat:"activity", type:"Fishing", name:"Panga Fishing Trips", desc:"Half-day panga trips for yellowtail, dorado, tuna & corvina with local captains. We arrange it for you.", img:"https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1200", tier:"book", ours:true, payLinkKey:"fishing", price:"Ask for rates" },
+      { cat:"activity", type:"Surf & Board Rentals", name:"Surf Lessons & Board Rentals", desc:"Boards, SUPs & lessons for First & Second Point — every level, from your first wave up.", img:"https://images.unsplash.com/photo-1502933691298-84fc14542831?q=80&w=1200", tier:"book", ours:true, payLinkKey:"surf", price:"Ask for rates" },
+
+      // ── SERVICES (Zach's storage = bookable; rest = info) ──
+      { cat:"service", type:"Storage", name:"Scorpion Bay Storage", desc:"Secure vehicle, boat, RV & gear storage year-round — gated, on-site caretaker, flexible terms.", img:"https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=1200", featured:true, tier:"book", ours:true, payLinkKey:"storage", price:"From $35 / mo", web:"#storage" },
+      { cat:"service", type:"Groceries", name:"Local Mini-Supers", desc:"Town's small markets for water, ice, produce & essentials. Bring pesos — the town is cash-only.", img:"https://images.unsplash.com/photo-1604719312566-8912e9227c6a?q=80&w=1200", tier:"info" },
+      { cat:"service", type:"Fuel", name:"In-Town Gasoline", desc:"No Pemex in San Juanico — gas is sold locally from drums. Fill up at every station on the way in.", img:"https://images.unsplash.com/photo-1632823469850-2f77dd9c7f93?q=80&w=1200", tier:"info" },
     ],
 
     // ── MAP ──────────────────────────────────────────────────────────────
+    // San Juanico town ≈ 26.2575,-112.4789 (Wikipedia); campground ≈ 26.24381,-112.47717 (RVing Baja).
     map: {
-      center: [26.2553, -112.4769],   // San Juanico / Scorpion Bay
+      center: [26.2520, -112.4800],   // bay / points
       zoom: 14,
     },
     // color groups for pins
-    pinColors: { surf:"#2dd4bf", ours:"#f0a73c", stay:"#a78bfa", food:"#f87171", service:"#60a5fa", launch:"#34d399" },
+    pinColors: { surf:"#2dd4bf", ours:"#f0a73c", stay:"#a78bfa", food:"#f87171", service:"#60a5fa", landmark:"#34d399" },
     pins: [
-      { name:"Scorpion Bay ATV Rentals", cat:"Our Business", group:"ours", coords:[26.2560,-112.4750] },
-      { name:"Scorpion Bay Storage",     cat:"Our Business", group:"ours", coords:[26.2576,-112.4731] },
-      { name:"First Point",              cat:"Surf Spot",    group:"surf", coords:[26.2520,-112.4805] },
-      { name:"Second Point",            cat:"Surf Spot",    group:"surf", coords:[26.2505,-112.4828] },
-      { name:"Third Point",             cat:"Surf Spot",    group:"surf", coords:[26.2488,-112.4852] },
-      { name:"Scorpion Bay Hotel",      cat:"Stay",         group:"stay", coords:[26.2548,-112.4762] },
-      { name:"Taco Stand El Punto",     cat:"Food",         group:"food", coords:[26.2540,-112.4770] },
-      { name:"Panga Boat Launch",       cat:"Boat Launch",  group:"launch", coords:[26.2532,-112.4788] },
+      { name:"Scorpion Bay Quad Rentals & Storage", cat:"Our Business · book here", group:"ours", coords:[26.2566,-112.4755] },
+      { name:"First Point",   cat:"Surf · mellow, beginner-friendly", group:"surf", coords:[26.2520,-112.4805] },
+      { name:"Second Point",  cat:"Surf · most consistent (campground)", group:"surf", coords:[26.2470,-112.4790] },
+      { name:"Third Point",   cat:"Surf · fast & hollow, advanced", group:"surf", coords:[26.2440,-112.4815] },
+      { name:"Fourth Point",  cat:"Surf · bigger & more exposed", group:"surf", coords:[26.2410,-112.4840] },
+      { name:"Scorpion Bay Surf Hotel", cat:"Stay · in town", group:"stay", coords:[26.2585,-112.4760] },
+      { name:"Scorpion Bay Cantina & Campground", cat:"Stay / Food · Second Point bluff", group:"stay", coords:[26.2438,-112.4772] },
+      { name:"El Burro en Primavera", cat:"Food · tacos & boards", group:"food", coords:[26.2560,-112.4775] },
+      { name:"Punta Pequeña Lighthouse", cat:"Landmark", group:"landmark", coords:[26.2395,-112.4858] },
     ],
 
-    // ── COMMUNITY: fishing seasons ───────────────────────────────────────
+    // ── COMMUNITY: fishing (panga, off the bay) ──────────────────────────
     fishSeasons: [
       { fish:"Yellowtail", when:"Nov – Apr" },
-      { fish:"Dorado (Mahi)", when:"Jul – Oct" },
-      { fish:"Tuna", when:"Jun – Nov" },
-      { fish:"Halibut & Corvina", when:"Year-round" },
+      { fish:"Dorado / Tuna", when:"Summer – Fall" },
+      { fish:"Sand Bass & Corvina", when:"Year-round" },
+      { fish:"Lobster (seasonal)", when:"Oct – Mar" },
     ],
   };
 
@@ -887,16 +985,27 @@
     if (!items.length){ grid.innerHTML = `<div class="dir-empty">No listings yet — be the first! Scroll down to add your business.</div>`; return; }
     grid.innerHTML = items.map(({l,idx}) => {
       const phone = l.phone ? `<span>📞 <a href="tel:${esc(l.phone)}">${esc(l.phone)}</a></span>` : '';
-      const web = l.web ? `<span>🔗 <a href="${esc(l.web)}">Visit</a></span>` : '';
+      const web = l.web && !l.web.startsWith('#') ? `<span>🔗 <a href="${esc(l.web)}" target="_blank" rel="noopener">Website</a></span>` : '';
+      const price = l.price ? `<span class="dc-price">${esc(l.price)}</span>` : '';
+      // CTA by monetization tier
+      let cta = '';
+      if (l.tier === 'book' && l.ours) {
+        cta = `<button class="dc-btn" data-book="${idx}">${esc(l.bookLabel || 'Reserve & Pay')} →</button>`;
+      } else if (l.tier === 'book' && l.book) {
+        cta = `<a class="dc-btn ghost" href="${esc(l.book)}" target="_blank" rel="noopener">Check Availability →</a>`;
+      } else if (l.tier === 'promo') {
+        cta = `<div class="dc-promo">♥ Local favorite — we love this spot</div>`;
+      }
       return `<div class="dir-card">
         <div class="dc-img" data-img="dir-${idx}" style="background-image:url('${esc(l.img)}')">
           <span class="dc-type" data-edit="dir-${idx}-type">${esc(l.type)}</span>
           ${l.featured?'<span class="dc-feat">★ Featured</span>':''}
         </div>
         <div class="dc-body">
-          <h3 data-edit="dir-${idx}-name">${esc(l.name)}</h3>
+          <div class="dc-head"><h3 data-edit="dir-${idx}-name">${esc(l.name)}</h3>${price}</div>
           <p class="dc-desc" data-edit="dir-${idx}-desc">${esc(l.desc)}</p>
           <div class="dc-meta">${phone}${web}</div>
+          ${cta}
         </div>
       </div>`;
     }).join('');
@@ -961,24 +1070,108 @@
   /* ════════════════════════════════════════════════════════════════════════
      FORMS — POST to formEndpoint, else mailto fallback (always works)
      ════════════════════════════════════════════════════════════════════════ */
+  // resolve a Stripe Payment Link for a given key (atv/storage/fishing/surf)
+  function payLink(key){ return key ? ((SITE.booking.payLinks || {})[key] || '') : ''; }
+  const bookingInbox = () => SITE.booking.email || SITE.contact.email;
+
   $$('form[data-form]').forEach(form => {
     form.addEventListener('submit', async e => {
       e.preventDefault();
       const status = form.querySelector('.form-status');
       const data = Object.fromEntries(new FormData(form).entries());
       const subject = form.dataset.form + ' — ' + SITE.name;
+      const link = payLink(form.dataset.paylink);
+      const to = form.dataset.paylink ? bookingInbox() : SITE.contact.email;
       if (status) status.textContent = 'Sending…';
+      let recorded = false;
       if (SITE.formEndpoint) {
         try {
           const res = await fetch(SITE.formEndpoint, { method:'POST', headers:{'Accept':'application/json'}, body:new FormData(form) });
-          if (res.ok) { if(status) status.textContent='✓ Thank you! We\'ll be in touch shortly.'; form.reset(); return; }
+          recorded = res.ok;
         } catch(_) {}
       }
-      // fallback: open email client pre-filled
-      const body = Object.entries(data).map(([k,v]) => `${k}: ${v}`).join('%0D%0A');
-      window.location.href = `mailto:${SITE.contact.email}?subject=${encodeURIComponent(subject)}&body=${body}`;
+      // If this business has a Stripe Payment Link, send the customer to secure checkout.
+      if (link) {
+        if (status) status.textContent = '✓ Taking you to secure checkout…';
+        window.open(link, '_blank', 'noopener');
+        return;
+      }
+      if (recorded) { if(status) status.textContent='✓ Thank you! We\'ll confirm shortly.'; form.reset(); return; }
+      // fallback: open email client pre-filled to the booking inbox
+      const body = Object.entries(data).filter(([k]) => k!=='tos').map(([k,v]) => `${k}: ${v}`).join('%0D%0A');
+      window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${body}`;
       if (status) status.textContent = '✓ Opening your email to send…';
     });
+  });
+
+  /* ════════════════════════════════════════════════════════════════════════
+     BOOKINGS — directory "Reserve & Pay" modal + Terms/Waiver modal
+     ════════════════════════════════════════════════════════════════════════ */
+  let currentBooking = null;
+  const bookModal = $('#bookModal'), tosModal = $('#tosModal');
+  function openBooking(l){
+    currentBooking = l;
+    const link = payLink(l.payLinkKey);
+    $('#bookTitle').textContent = l.name;
+    $('#bookSub').textContent = (l.price ? l.price + ' · ' : '') +
+      (link ? 'Reserve and pay securely — your spot is confirmed at checkout.'
+            : "Send your request and we'll confirm availability and price.");
+    $('#bookSubmit').textContent = (link ? 'Reserve & Pay →' : 'Request to Book →');
+    const st = $('#bookForm .form-status'); if (st) st.textContent = '';
+    bookModal.hidden = false; document.body.style.overflow = 'hidden';
+  }
+  function closeBooking(){ bookModal.hidden = true; if (tosModal.hidden) document.body.style.overflow = ''; }
+  function openToS(){
+    $('#tosBody').innerHTML = (SITE.booking.tos || []).map(p => `<p>${esc(p)}</p>`).join('');
+    tosModal.hidden = false; document.body.style.overflow = 'hidden';
+  }
+  function closeToS(){ tosModal.hidden = true; if (bookModal.hidden) document.body.style.overflow = ''; }
+
+  // Directory "Reserve & Pay" buttons (our bookable listings)
+  $('#dirGrid').addEventListener('click', e => {
+    const b = e.target.closest('[data-book]');
+    if (!b || EDITING) return;          // don't trigger bookings while editing text
+    openBooking(SITE.listings[+b.dataset.book]);
+  });
+  // Any "Terms & Waiver" link, anywhere
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-tos]')) { e.preventDefault(); openToS(); }
+  });
+  $('#bookClose').addEventListener('click', closeBooking);
+  $('#bookModal').addEventListener('click', e => { if (e.target === bookModal) closeBooking(); });
+  $('#tosClose').addEventListener('click', closeToS);
+  $('#tosOk').addEventListener('click', closeToS);
+  $('#tosModal').addEventListener('click', e => { if (e.target === tosModal) closeToS(); });
+  addEventListener('keydown', e => { if (e.key === 'Escape') { if(!tosModal.hidden) closeToS(); else if(!bookModal.hidden) closeBooking(); } });
+
+  $('#bookForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const status = form.querySelector('.form-status');
+    const data = Object.fromEntries(new FormData(form).entries());
+    const l = currentBooking || {};
+    const link = payLink(l.payLinkKey);
+    const subject = `Booking request — ${l.name || ''} — ${SITE.name}`;
+    if (status) status.textContent = 'Sending…';
+    let recorded = false;
+    if (SITE.formEndpoint) {
+      try {
+        const fd = new FormData(form); fd.append('business', l.name || '');
+        const res = await fetch(SITE.formEndpoint, { method:'POST', headers:{'Accept':'application/json'}, body:fd });
+        recorded = res.ok;
+      } catch(_) {}
+    }
+    if (link) {
+      if (status) status.textContent = '✓ Taking you to secure checkout…';
+      window.open(link, '_blank', 'noopener');
+      setTimeout(closeBooking, 1400);
+      return;
+    }
+    if (recorded) { if(status) status.textContent='✓ Request sent! We\'ll confirm shortly.'; form.reset(); return; }
+    const body = Object.entries(data).filter(([k]) => k!=='tos').map(([k,v]) => `${k}: ${v}`).join('%0D%0A')
+      + `%0D%0A%0D%0ABusiness: ${l.name || ''}`;
+    window.location.href = `mailto:${bookingInbox()}?subject=${encodeURIComponent(subject)}&body=${body}`;
+    if (status) status.textContent = '✓ Opening your email to send…';
   });
 
   /* ════════════════════════════════════════════════════════════════════════
