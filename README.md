@@ -34,4 +34,4 @@ Copy the folder, edit `SITE`, deploy. See **CLAUDE.md** for the full playbook.
 ## Deploy
 
 Static — host on Render / Netlify / Cloudflare Pages / GitHub Pages and point a custom domain at it (free SSL).
-Suggested domain: **scorpionbaybaja.com**.
+Live at **scorpionbaymexico.com** (GitHub Pages).
