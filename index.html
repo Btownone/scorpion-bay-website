@@ -759,15 +759,21 @@
     // Falls back to contact.email until set.
     booking: {
       email: "",                       // TODO: booking inbox (Bernardo will provide)
-      // Per-business Stripe Payment Link slots — paste the link from Zach's
-      // Stripe dashboard and "Reserve & Pay" sends the customer straight to a
-      // secure Stripe checkout (money lands in Zach's account). Blank = the
-      // booking form just emails the request to book.email for manual follow-up.
+      depositAmount: "$25",            // shown on the booking buttons
+      // ONE flat $25 deposit Stripe Payment Link for ALL activities. Paste the
+      // link from the AI Concepts / AutomatedMerch Stripe dashboard here and
+      // every "Reserve" button sends the customer straight to secure Stripe
+      // checkout (deposit lands in the account; see sales in the Stripe
+      // dashboard). Each activity is tagged via client_reference_id so you can
+      // tell which activity each deposit was for. Blank = email-request fallback.
+      depositLink: "",                 // TODO: paste the $25 Stripe Payment Link
+      // (Per-activity links later — when deposits differ per activity.)
       payLinks: {
         atv: "",                       // Scorpion Bay Quad Rentals
         storage: "",                   // Scorpion Bay Storage
         fishing: "",                   // panga fishing (our markup)
         surf: "",                      // surf / board lessons (our markup)
+        kite: "",                      // kiteboarding lessons (our markup)
       },
       // Terms / liability waiver shown + accepted before any paid booking.
       // ⚠️ DRAFT — Zach/Bernardo must have a lawyer finalize before taking ATV money.
@@ -860,6 +866,7 @@
       { cat:"activity", type:"Quad & ATV Rentals", name:"Scorpion Bay Quad Rentals", desc:"Quads & side-by-sides to ride the beaches, fingers & rivermouth — single, 2-up, family & guided tours.", img:"https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1200", featured:true, tier:"book", ours:true, payLinkKey:"atv", price:"From $65 / day", web:"#atv" },
       { cat:"activity", type:"Fishing", name:"Panga Fishing Trips", desc:"Half-day panga trips for yellowtail, dorado, tuna & corvina with local captains. We arrange it for you.", img:"https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1200", tier:"book", ours:true, payLinkKey:"fishing", price:"Ask for rates" },
       { cat:"activity", type:"Surf & Board Rentals", name:"Surf Lessons & Board Rentals", desc:"Boards, SUPs & lessons for First & Second Point — every level, from your first wave up.", img:"https://images.unsplash.com/photo-1502933691298-84fc14542831?q=80&w=1200", tier:"book", ours:true, payLinkKey:"surf", price:"Ask for rates" },
+      { cat:"activity", type:"Kiteboarding", name:"Kiteboarding Lessons", desc:"Lessons & gear for every level on the bay's steady afternoon wind — from first kite to riding upwind.", img:"https://images.unsplash.com/photo-1455729552865-3658a5d39692?q=80&w=1200", tier:"book", ours:true, payLinkKey:"kite", price:"Ask for rates" },
 
       // ── SERVICES (Zach's storage = bookable; rest = info) ──
       { cat:"service", type:"Storage", name:"Scorpion Bay Storage", desc:"Secure vehicle, boat, RV & gear storage year-round — gated, on-site caretaker, flexible terms.", img:"https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=1200", featured:true, tier:"book", ours:true, payLinkKey:"storage", price:"From $35 / mo", web:"#storage" },
@@ -990,7 +997,10 @@
       // CTA by monetization tier
       let cta = '';
       if (l.tier === 'book' && l.ours) {
-        cta = `<button class="dc-btn" data-book="${idx}">${esc(l.bookLabel || 'Reserve & Pay')} →</button>`;
+        const dl = SITE.booking.depositLink;
+        cta = dl
+          ? `<a class="dc-btn" href="${esc(depositHref(l.name))}" target="_blank" rel="noopener">Reserve · ${esc(SITE.booking.depositAmount || '$25')} deposit →</a>`
+          : `<button class="dc-btn" data-book="${idx}">${esc(l.bookLabel || 'Reserve & Pay')} →</button>`;
       } else if (l.tier === 'book' && l.book) {
         cta = `<a class="dc-btn ghost" href="${esc(l.book)}" target="_blank" rel="noopener">Check Availability →</a>`;
       } else if (l.tier === 'promo') {
@@ -1071,7 +1081,13 @@
      FORMS — POST to formEndpoint, else mailto fallback (always works)
      ════════════════════════════════════════════════════════════════════════ */
   // resolve a Stripe Payment Link for a given key (atv/storage/fishing/surf)
-  function payLink(key){ return key ? ((SITE.booking.payLinks || {})[key] || '') : ''; }
+  // One flat deposit link wins for every activity; per-activity links are the fallback.
+  function payLink(key){ return SITE.booking.depositLink || (key ? ((SITE.booking.payLinks || {})[key] || '') : ''); }
+  // Build the deposit checkout URL, tagging which activity it was for (shows in Stripe).
+  function depositHref(label){
+    const dl = SITE.booking.depositLink; if (!dl) return '';
+    return dl + (dl.includes('?') ? '&' : '?') + 'client_reference_id=' + encodeURIComponent(String(label).slice(0,180));
+  }
   const bookingInbox = () => SITE.booking.email || SITE.contact.email;
 
   $$('form[data-form]').forEach(form => {
