@@ -453,6 +453,7 @@
       <li><a href="#community">Community</a></li>
       <li><a href="#join" class="nav-cta">Plan Your Trip</a></li>
     </ul>
+    <button class="lang-toggle" id="langToggle" type="button" aria-label="Cambiar a Español"><span class="lt-flag">🌐</span><span id="langLabel">ES</span></button>
     <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
   </nav>
 
@@ -817,10 +818,10 @@
       payLinkKey: "atv",   // → booking.payLinks.atv (Stripe). Blank = email the request.
       image: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1600",
       options: [
-        { name:"Single Rider Quad",   desc:"Automatic, beginner-friendly", price:"$65",  unit:"/ day" },
-        { name:"2-Up Quad",           desc:"Ride with a passenger",        price:"$85",  unit:"/ day" },
-        { name:"Side-by-Side (4-seat)",desc:"The whole family / crew",     price:"$160", unit:"/ day" },
-        { name:"Guided Desert Tour",  desc:"3 hrs · guide + viewpoints",   price:"$95",  unit:"/ person" },
+        { name:"1-Day Rental",        desc:"One full day on the dunes & beach",  price:"$88",  unit:"/ day" },
+        { name:"3-Day Rental",        desc:"Best for a long weekend",            price:"$65",  unit:"/ day" },
+        { name:"7-Day Rental",        desc:"A full week of exploring",           price:"$55",  unit:"/ day" },
+        { name:"Guided Desert Tour",  desc:"Guide + viewpoints & hidden spots",  price:"$155", unit:"/ day" },
       ],
       includes: ["Helmet & goggles", "Safety briefing", "Trail map", "Fuel to start", "Free local delivery"],
     },
@@ -851,27 +852,80 @@
     // ours: true = our booking flow (waiver + we take payment/markup)
     // book: external booking/site URL (for places we just link to)
     listings: [
-      // ── STAY (promote + link to their own booking) ──
-      { cat:"stay", type:"Hotel", name:"Scorpion Bay Surf Hotel", desc:"In-town boutique hotel & cantina — rooms, casitas & bunkhouses, A/C, Wi-Fi, breakfast. Arranges surf & fishing.", img:"https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1200", featured:true, tier:"book", price:"Rooms from $104", phone:"+52 613-104-2067", web:"https://www.scorpionbayhotel.com/", book:"https://hotels.cloudbeds.com/reservation/jD10qt" },
-      { cat:"stay", type:"Campground & Cantina", name:"Scorpion Bay Cantina & Campground", desc:"The classic surf camp on the bluff over Second Point — camping, palapas, rooms & the town's social hub.", img:"https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1200", tier:"book", price:"Camping from 200 MXN", web:"http://www.scorpionbay.net/", book:"http://www.scorpionbay.net/accommodations" },
-      { cat:"stay", type:"Bungalows", name:"Casa Venezia — Scorpion Bay Bungalows", desc:"Solar-powered bungalows with Starlink Wi-Fi, kitchen & dog-friendly — the quiet high side of the village.", img:"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200", tier:"book", web:"https://www.casaveneziasanjuanico.com/", book:"https://www.casaveneziasanjuanico.com/" },
-      { cat:"stay", type:"Vacation Rentals", name:"Casas de San Juanico", desc:"Studio to 4-bedroom casas for rent around town — La Casita, Casa Hermosa, Casa Theresa & more.", img:"https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1200", tier:"book", web:"https://casasdesanjuanico.com/", book:"https://casasdesanjuanico.com/" },
+      // ═══ EXPERIENCES & TOURS (ours = reserve + pay deposit through us) ═══
+      // Money-makers featured first.
+      { cat:"activity", type:"Surf Lessons", name:"Surf Lessons & Board Rentals", desc:"Boards, SUPs & lessons for First & Second Point — every level, from your very first wave up.", img:"https://images.unsplash.com/photo-1502933691298-84fc14542831?q=80&w=1200", featured:true, tier:"book", ours:true, payLinkKey:"surf", price:"Ask for rates",
+        es:{ type:"Clases de Surf", name:"Clases de Surf y Renta de Tablas", desc:"Tablas, SUPs y clases para First y Second Point — todos los niveles, desde tu primera ola.", price:"Precio a consultar" } },
+      { cat:"activity", type:"Panga Fishing", name:"Panga Fishing Trips", desc:"Half-day panga trips for yellowtail, dorado, tuna & corvina with local captains. We arrange it for you.", img:"https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1200", featured:true, tier:"book", ours:true, payLinkKey:"fishing", price:"Ask for rates",
+        es:{ type:"Pesca en Panga", name:"Viajes de Pesca en Panga", desc:"Viajes en panga de medio día para jurel, dorado, atún y corvina con capitanes locales. Lo organizamos por ti.", price:"Precio a consultar" } },
+      { cat:"activity", type:"Quad & ATV Rentals", name:"Scorpion Bay Quad Rentals", desc:"Quads & side-by-sides for the beaches, fingers & rivermouth — 1-day, multi-day & guided desert tours.", img:"https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1200", featured:true, tier:"book", ours:true, payLinkKey:"atv", price:"From $55 / day", web:"#atv",
+        es:{ type:"Renta de Cuatrimotos", name:"Renta de Cuatrimotos Scorpion Bay", desc:"Cuatrimotos y side-by-sides para las playas, los fingers y la desembocadura — 1 día, varios días y tours guiados al desierto.", price:"Desde $55 / día" } },
+      { cat:"activity", type:"Fossil Tour", name:"Fossilized Shark-Teeth Hunting Tour", desc:"8-hour guided hunt for your own fossilized shark teeth — Megalodon country — lunch included. Min 2 people.", img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200", featured:true, tier:"book", ours:true, price:"From $75 / person",
+        es:{ type:"Tour de Fósiles", name:"Tour de Dientes de Tiburón Fosilizados", desc:"Búsqueda guiada de 8 horas para encontrar tus propios dientes de tiburón fosilizados — tierra de Megalodón — comida incluida. Mínimo 2 personas.", price:"Desde $75 / persona" } },
+      { cat:"activity", type:"Surf Safari", name:"Surf Safari — Car or Boat", desc:"Guided run to private, uncrowded point breaks by 4x4 or panga. Score empty waves the crowds never find.", img:"https://images.unsplash.com/photo-1455729552865-3658a5d39692?q=80&w=1200", tier:"book", ours:true, price:"Ask for rates",
+        es:{ type:"Safari de Surf", name:"Safari de Surf — Auto o Lancha", desc:"Recorrido guiado a points privados y sin gente en 4x4 o panga. Olas vacías que la multitud nunca encuentra.", price:"Precio a consultar" } },
+      { cat:"activity", type:"Kiteboarding", name:"Kiteboarding Lessons", desc:"Lessons & gear for every level on the bay's steady afternoon wind — from first kite to riding upwind.", img:"https://images.unsplash.com/photo-1455729552865-3658a5d39692?q=80&w=1200", tier:"book", ours:true, payLinkKey:"kite", price:"Ask for rates",
+        es:{ type:"Kiteboarding", name:"Clases de Kiteboarding", desc:"Clases y equipo para todos los niveles con el viento constante de la tarde — desde tu primer kite hasta navegar contra el viento.", price:"Precio a consultar" } },
+      { cat:"activity", type:"Shore Fishing", name:"World-Class Shore Fishing", desc:"Fish 'the finger' from the rocks — first-cast grouper and hard-pulling roosters off the beach.", img:"https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1200", tier:"book", ours:true, price:"Ask for rates",
+        es:{ type:"Pesca de Orilla", name:"Pesca de Orilla de Clase Mundial", desc:"Pesca 'el finger' desde las rocas — cabrilla al primer lance y pez gallo desde la playa.", price:"Precio a consultar" } },
+      { cat:"activity", type:"Diving", name:"Reef Dive & Snorkel Tour", desc:"Dive and snorkel the bay's reefs — combine it with a small fishing trip for the full day on the water.", img:"https://images.unsplash.com/photo-1502680390469-be75c86b636f?q=80&w=1200", tier:"book", ours:true, price:"Ask for rates",
+        es:{ type:"Buceo", name:"Buceo y Snorkel en el Arrecife", desc:"Bucea y haz snorkel en los arrecifes de la bahía — combínalo con un viaje de pesca para el día completo en el agua.", price:"Precio a consultar" } },
+      { cat:"activity", type:"Whale Watching", name:"Whale Watching (Seasonal)", desc:"Get out on the water to see gray & humpback whales during the winter–spring migration season.", img:"https://images.unsplash.com/photo-1502680390469-be75c86b636f?q=80&w=1200", tier:"book", ours:true, price:"Seasonal · ask for rates",
+        es:{ type:"Avistamiento de Ballenas", name:"Avistamiento de Ballenas (Temporada)", desc:"Sal al mar a ver ballenas grises y jorobadas durante la temporada de migración de invierno–primavera.", price:"Temporada · a consultar" } },
+      { cat:"activity", type:"Surf Photography", name:"Surf Photography — DSLR", desc:"Pro lineup shooter captures your session from the beach with a DSLR. Walk away with edited shots.", img:"https://images.unsplash.com/photo-1502933691298-84fc14542831?q=80&w=1200", tier:"book", ours:true, price:"Ask for rates",
+        es:{ type:"Fotografía de Surf", name:"Fotografía de Surf — DSLR", desc:"Un fotógrafo profesional capta tu sesión desde la playa con DSLR. Te llevas las fotos ya editadas.", price:"Precio a consultar" } },
+      { cat:"activity", type:"Surf Photography", name:"Surf Photography — Drone", desc:"Cinematic drone footage & stills of your waves from above — the angle everyone wants.", img:"https://images.unsplash.com/photo-1455729552865-3658a5d39692?q=80&w=1200", tier:"book", ours:true, price:"Ask for rates",
+        es:{ type:"Fotografía de Surf", name:"Fotografía de Surf — Dron", desc:"Video y fotos cinematográficas de tus olas desde el aire con dron — el ángulo que todos quieren.", price:"Precio a consultar" } },
+      { cat:"activity", type:"Ranch & Horseback", name:"Ranch Visit & Horseback Ride", desc:"Visit an authentic Baja ranch and ride horseback through the desert — a real local experience.", img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200", tier:"book", ours:true, price:"Ask for rates",
+        es:{ type:"Rancho y Cabalgata", name:"Visita a Rancho y Cabalgata", desc:"Visita un rancho auténtico de Baja y cabalga por el desierto — una experiencia local de verdad.", price:"Precio a consultar" } },
+      { cat:"activity", type:"Day Trip", name:"Day Trip to La Purísima", desc:"A scenic drive to the palm-oasis town of La Purísima — history, springs and a change of scenery.", img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200", tier:"book", ours:true, price:"Ask for rates",
+        es:{ type:"Excursión", name:"Excursión a La Purísima", desc:"Un paseo escénico al pueblo-oasis de palmeras de La Purísima — historia, manantiales y un cambio de paisaje.", price:"Precio a consultar" } },
+      { cat:"activity", type:"Wellness", name:"Beachside Yoga", desc:"Sunrise & sunset flow sessions on the sand — recover from the surf and reset.", img:"https://images.unsplash.com/photo-1502680390469-be75c86b636f?q=80&w=1200", tier:"book", ours:true, price:"Ask for rates",
+        es:{ type:"Bienestar", name:"Yoga en la Playa", desc:"Sesiones al amanecer y al atardecer sobre la arena — recupérate del surf y reconéctate.", price:"Precio a consultar" } },
+      { cat:"activity", type:"Wellness", name:"Massage", desc:"Book an in-town massage to recover after a long session in the water or on the trails.", img:"https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1200", tier:"book", ours:true, price:"Ask for rates",
+        es:{ type:"Bienestar", name:"Masaje", desc:"Reserva un masaje en el pueblo para recuperarte después de una larga sesión en el agua o en los senderos.", price:"Precio a consultar" } },
+      { cat:"activity", type:"Courts", name:"Pickleball & Tennis", desc:"Grab a game — pickleball and tennis courts available to book by the hour.", img:"https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1200", tier:"book", ours:true, price:"Ask for rates",
+        es:{ type:"Canchas", name:"Pickleball y Tenis", desc:"Arma un partido — canchas de pickleball y tenis disponibles por hora.", price:"Precio a consultar" } },
+      { cat:"activity", type:"Golf & Sauna", name:"Golf & Sauna", desc:"A round of desert golf and a sauna to round out your stay — ask us to set it up.", img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200", tier:"book", ours:true, price:"Ask for rates",
+        es:{ type:"Golf y Sauna", name:"Golf y Sauna", desc:"Una ronda de golf en el desierto y un sauna para cerrar tu visita — pídenos que lo organicemos.", price:"Precio a consultar" } },
 
-      // ── FOOD & DRINK (free promo — we love these) ──
-      { cat:"food", type:"Taco Bar & Surf Shop", name:"El Burro en Primavera", desc:"Open-air surfer hangout — grilled fish, shrimp tacos & burgers, hammocks, and boards to rent, buy or trade.", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200", featured:true, tier:"promo" },
-      { cat:"food", type:"Cantina & Bar", name:"Scorpion Bay Cantina", desc:"Breakfast to dinner at the campground — fish tacos, burrito de papas & cold beers with a Second Point view.", img:"https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1200", tier:"promo", web:"http://www.scorpionbay.net/" },
-      { cat:"food", type:"Taco Stand", name:"Tacos Cristy", desc:"Local hole-in-the-wall for tacos, tortas & burritos — cheap, tasty and full of locals.", img:"https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=1200", tier:"promo" },
+      // ═══ FOOD & DRINK ═══
+      { cat:"food", type:"Beach Dinner", name:"Seafood Dinner on the Beach", desc:"A private reserved seafood feast on the sand at sunset — the experience people remember most.", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200", featured:true, tier:"book", ours:true, price:"Ask for rates",
+        es:{ type:"Cena en la Playa", name:"Cena de Mariscos en la Playa", desc:"Un banquete privado de mariscos en la arena al atardecer — la experiencia que la gente más recuerda.", price:"Precio a consultar" } },
+      { cat:"food", type:"Lobster Feast", name:"Lobster Feast (Seasonal)", desc:"Go lobster fishing then eat all-you-can-eat lobster on the boat or at a beach house. In-season only.", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200", tier:"book", ours:true, price:"Seasonal · ask for rates",
+        es:{ type:"Festín de Langosta", name:"Festín de Langosta (Temporada)", desc:"Sal a pescar langosta y luego come langosta a discreción en la lancha o en una casa de playa. Solo en temporada.", price:"Temporada · a consultar" } },
+      { cat:"food", type:"Pre-Order Seafood", name:"Fresh & Smoked Fish", desc:"Pre-order fresh-caught and smoked fish to pick up — order ahead, it sells out fast.", img:"https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1200", tier:"book", ours:true, price:"Pre-order",
+        es:{ type:"Pescado por Encargo", name:"Pescado Fresco y Ahumado", desc:"Encarga pescado fresco y ahumado para recoger — pide con anticipación, se agota rápido.", price:"Por encargo" } },
+      { cat:"food", type:"Ceviche", name:"Aldo's Ceviche", desc:"The local favorite for fresh ceviche & tostadas right by the water.", img:"https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=1200", tier:"promo",
+        es:{ type:"Ceviche", name:"Ceviche de Aldo", desc:"El favorito local para ceviche fresco y tostadas junto al mar.", price:"" } },
+      { cat:"food", type:"Coffee Shop", name:"Jackson's Coffee Shop", desc:"The town's new coffee spot — espresso, pastries and a good place to start the morning.", img:"https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1200", tier:"promo",
+        es:{ type:"Cafetería", name:"Cafetería de Jackson", desc:"El nuevo café del pueblo — espresso, pan dulce y un buen lugar para empezar la mañana.", price:"" } },
+      { cat:"food", type:"Taco Bar & Surf Shop", name:"El Burro en Primavera", desc:"Open-air surfer hangout — grilled fish, shrimp tacos & burgers, hammocks, and boards to rent, buy or trade.", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200", tier:"promo",
+        es:{ type:"Taquería y Surf Shop", name:"El Burro en Primavera", desc:"Punto de reunión surfista al aire libre — pescado a la parrilla, tacos de camarón y hamburguesas, hamacas y tablas para rentar, comprar o cambiar.", price:"" } },
+      { cat:"food", type:"Cantina & Bar", name:"Scorpion Bay Cantina", desc:"Breakfast to dinner at the campground — fish tacos, burrito de papas & cold beers with a Second Point view.", img:"https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1200", tier:"promo", web:"http://www.scorpionbay.net/",
+        es:{ type:"Cantina y Bar", name:"Scorpion Bay Cantina", desc:"Del desayuno a la cena en el campamento — tacos de pescado, burrito de papas y cervezas frías con vista a Second Point.", price:"" } },
+      { cat:"food", type:"Taco Stand", name:"Tacos Cristy", desc:"Local hole-in-the-wall for tacos, tortas & burritos — cheap, tasty and full of locals.", img:"https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=1200", tier:"promo",
+        es:{ type:"Puesto de Tacos", name:"Tacos Cristy", desc:"Fondita local de tacos, tortas y burritos — barato, sabroso y lleno de locales.", price:"" } },
 
-      // ── ACTIVITIES (ours = we book + take payment / markup) ──
-      { cat:"activity", type:"Quad & ATV Rentals", name:"Scorpion Bay Quad Rentals", desc:"Quads & side-by-sides to ride the beaches, fingers & rivermouth — single, 2-up, family & guided tours.", img:"https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1200", featured:true, tier:"book", ours:true, payLinkKey:"atv", price:"From $65 / day", web:"#atv" },
-      { cat:"activity", type:"Fishing", name:"Panga Fishing Trips", desc:"Half-day panga trips for yellowtail, dorado, tuna & corvina with local captains. We arrange it for you.", img:"https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1200", tier:"book", ours:true, payLinkKey:"fishing", price:"Ask for rates" },
-      { cat:"activity", type:"Surf & Board Rentals", name:"Surf Lessons & Board Rentals", desc:"Boards, SUPs & lessons for First & Second Point — every level, from your first wave up.", img:"https://images.unsplash.com/photo-1502933691298-84fc14542831?q=80&w=1200", tier:"book", ours:true, payLinkKey:"surf", price:"Ask for rates" },
-      { cat:"activity", type:"Kiteboarding", name:"Kiteboarding Lessons", desc:"Lessons & gear for every level on the bay's steady afternoon wind — from first kite to riding upwind.", img:"https://images.unsplash.com/photo-1455729552865-3658a5d39692?q=80&w=1200", tier:"book", ours:true, payLinkKey:"kite", price:"Ask for rates" },
+      // ═══ STAY (referral partners — featured) ═══
+      { cat:"stay", type:"Hotel", name:"Scorpion Bay Surf Hotel", desc:"In-town boutique hotel & cantina — rooms, casitas & bunkhouses, A/C, Wi-Fi, breakfast. Our top referral partner.", img:"https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1200", featured:true, tier:"book", price:"Rooms from $104", phone:"+52 613-104-2067", web:"https://www.scorpionbayhotel.com/", book:"https://hotels.cloudbeds.com/reservation/jD10qt",
+        es:{ type:"Hotel", name:"Scorpion Bay Surf Hotel", desc:"Hotel boutique y cantina en el pueblo — habitaciones, casitas y dormitorios, A/C, Wi-Fi y desayuno. Nuestro mejor aliado de referidos.", price:"Habitaciones desde $104" } },
+      { cat:"stay", type:"Campground & Cantina", name:"Scorpion Bay Cantina & Campground", desc:"The classic surf camp on the bluff over Second Point — camping, palapas, rooms & the town's social hub.", img:"https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1200", tier:"book", price:"Camping from 200 MXN", web:"http://www.scorpionbay.net/", book:"http://www.scorpionbay.net/accommodations",
+        es:{ type:"Campamento y Cantina", name:"Scorpion Bay Cantina & Campground", desc:"El clásico campamento de surf sobre Second Point — camping, palapas, habitaciones y el centro social del pueblo.", price:"Camping desde 200 MXN" } },
+      { cat:"stay", type:"Bungalows", name:"Casa Venezia — Scorpion Bay Bungalows", desc:"Solar-powered bungalows with Starlink Wi-Fi, kitchen & dog-friendly — the quiet high side of the village.", img:"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200", tier:"book", web:"https://www.casaveneziasanjuanico.com/", book:"https://www.casaveneziasanjuanico.com/",
+        es:{ type:"Bungalows", name:"Casa Venezia — Scorpion Bay Bungalows", desc:"Bungalows con energía solar, Wi-Fi Starlink, cocina y pet-friendly — la zona alta y tranquila del pueblo.", price:"" } },
+      { cat:"stay", type:"Vacation Rental", name:"Casa Verde & New Property", desc:"Jamie's place — comfortable casas for rent in town, plus a brand-new property. Ask us for dates.", img:"https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1200", tier:"book", ours:true, price:"Ask for rates",
+        es:{ type:"Casa de Renta", name:"Casa Verde y Nueva Propiedad", desc:"El lugar de Jamie — casas cómodas de renta en el pueblo, más una propiedad nueva. Pregúntanos por fechas.", price:"Precio a consultar" } },
 
-      // ── SERVICES (Zach's storage = bookable; rest = info) ──
-      { cat:"service", type:"Storage", name:"Scorpion Bay Storage", desc:"Secure vehicle, boat, RV & gear storage year-round — gated, on-site caretaker, flexible terms.", img:"https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=1200", featured:true, tier:"book", ours:true, payLinkKey:"storage", price:"From $35 / mo", web:"#storage" },
-      { cat:"service", type:"Groceries", name:"Local Mini-Supers", desc:"Town's small markets for water, ice, produce & essentials. Bring pesos — the town is cash-only.", img:"https://images.unsplash.com/photo-1604719312566-8912e9227c6a?q=80&w=1200", tier:"info" },
-      { cat:"service", type:"Fuel", name:"In-Town Gasoline", desc:"No Pemex in San Juanico — gas is sold locally from drums. Fill up at every station on the way in.", img:"https://images.unsplash.com/photo-1632823469850-2f77dd9c7f93?q=80&w=1200", tier:"info" },
+      // ═══ SERVICES ═══
+      { cat:"service", type:"Storage", name:"Scorpion Bay Storage", desc:"Secure vehicle, boat, RV & gear storage year-round — gated, on-site caretaker, flexible terms. Click to talk to us.", img:"https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=1200", tier:"book", ours:true, payLinkKey:"storage", price:"From $35 / mo", web:"#storage",
+        es:{ type:"Almacenaje", name:"Scorpion Bay Storage", desc:"Almacenaje seguro de vehículos, lanchas, RV y equipo todo el año — cercado, encargado en sitio, términos flexibles. Haz clic para hablar con nosotros.", price:"Desde $35 / mes" } },
+      { cat:"service", type:"Ding Repair", name:"Surfboard Ding Repair", desc:"Cracked your board? Local ding repair to get you back in the water fast.", img:"https://images.unsplash.com/photo-1502933691298-84fc14542831?q=80&w=1200", tier:"book", ours:true, price:"Ask for rates",
+        es:{ type:"Reparación de Tablas", name:"Reparación de Dings de Tabla", desc:"¿Rompiste tu tabla? Reparación local de dings para regresarte al agua rápido.", price:"Precio a consultar" } },
+      { cat:"service", type:"Groceries", name:"Local Mini-Supers", desc:"Town's small markets for water, ice, produce & essentials. Bring pesos — the town is cash-only.", img:"https://images.unsplash.com/photo-1604719312566-8912e9227c6a?q=80&w=1200", tier:"info",
+        es:{ type:"Abarrotes", name:"Minisúper Locales", desc:"Los pequeños mercados del pueblo para agua, hielo, verduras y lo esencial. Trae pesos — el pueblo es solo en efectivo.", price:"" } },
+      { cat:"service", type:"Fuel", name:"In-Town Gasoline", desc:"No Pemex in San Juanico — gas is sold locally from drums. Fill up at every station on the way in.", img:"https://images.unsplash.com/photo-1632823469850-2f77dd9c7f93?q=80&w=1200", tier:"info",
+        es:{ type:"Gasolina", name:"Gasolina en el Pueblo", desc:"No hay Pemex en San Juanico — la gasolina se vende localmente en tambos. Llena el tanque en cada estación de camino.", price:"" } },
     ],
 
     // ── MAP ──────────────────────────────────────────────────────────────
@@ -938,6 +992,254 @@
     });
   }
 
+  /* ════════════════════════════════════════════════════════════════════════
+     BILINGUAL  —  English (default)  ·  Español (toggle)
+     One button in the nav flips the whole site. English is the source of
+     truth; Spanish lives in the ES dictionary (keyed by the same data-edit
+     slugs the editor uses) + a CHROME selector map for static labels.
+     ════════════════════════════════════════════════════════════════════════ */
+  const LANG_KEY = 'scorpionbay-lang';
+  // ?lang=es / ?lang=en deep-links win; otherwise use the saved choice (default English)
+  const urlLang = new URLSearchParams(location.search).get('lang');
+  let LANG = 'en';
+  try { LANG = (urlLang === 'es' || urlLang === 'en') ? urlLang
+              : (localStorage.getItem(LANG_KEY) === 'es' ? 'es' : 'en'); }
+  catch(_) { if (urlLang === 'es') LANG = 'es'; }
+  let updateMapLang = function(){};            // reassigned by initMap()
+
+  // ---- Spanish dictionary, keyed by data-edit / data-i18n slug ----
+  const ES = {
+    'hero-eyebrow':'San Juanico · Baja California Sur',
+    'hero-title':'Bienvenido a <span>Scorpion Bay</span>',
+    'hero-sub':'Descubre el surf, la pesca, la aventura y la vida en una de las costas más legendarias de Baja.',
+    'atv-title':'Explora Baja Sobre Cuatro Ruedas',
+    'atv-lead':'Recorre playas vírgenes, senderos del desierto y miradores escondidos. Nuestra flota bien cuidada está lista para pilotos de todos los niveles — desde principiantes hasta exploradores de la sierra.',
+    'atv-safety':'Casco, plática de seguridad y mapa de senderos incluidos en cada renta. Se requiere licencia de conducir vigente. Tours guiados disponibles para grupos.',
+    'storage-title':'Almacenaje Seguro, Tranquilidad Todo el Año',
+    'storage-lead':'Ya sea que guardes un vehículo por la temporada, una lancha, tablas de surf o equipo entre viajes — mantenlo seguro, protegido y listo para tu próxima aventura en Baja.',
+    'parallax-title':'Donde el Desierto se Encuentra con el Mar',
+    'parallax-sub':'Cuatro point breaks de derecha de clase mundial, playas vírgenes y algunas de las personas más cálidas de Baja.',
+    'community-prose':'<p><strong>San Juanico</strong> — conocido por surfistas de todo el mundo como Scorpion Bay — es un remoto pueblo de pescadores en la costa del Pacífico de Baja California Sur. Durante décadas fue un secreto bien guardado entre los surfistas dispuestos a manejar horas por caminos de terracería por sus legendarias olas de derecha.</p><p>Hoy es una comunidad muy unida de locales, pescadores, extranjeros y viajeros atraídos por lo mismo: <strong>agua tibia, olas vacías, cielos llenos de estrellas y una vida más tranquila.</strong> El pueblo funciona con energía solar y buena vibra, con puestos de tacos, palapas-bar y hoteles familiares que tratan a cada visitante como a un viejo amigo.</p><p>Ya sea que vengas a surfear los points, pescar jurel mar adentro, cruzar el desierto en cuatrimoto o simplemente ver el atardecer con una bebida fría — Scorpion Bay tiene una forma de hacerte querer quedarte un poco más.</p>',
+    'surf-report':'Mejor con los swells del sur en verano (aproximadamente de mayo a septiembre). Cuatro points de derecha — First (tranquilo), Second (el más constante), Third (rápido y hueco) y Fourth (más grande) — que pueden conectarse para olas de más de un minuto. Protegido del viento del noroeste.',
+    'events':'La temporada de surf es máxima en verano; el invierno es más tranquilo e ideal para la pesca y los paseos en cuatrimoto. Ven preparado: el pueblo es solo en efectivo (no hay cajero), no hay Pemex (la gasolina se vende en el pueblo) y no hay servicio médico completo — llena el tanque y abastécete en el camino.',
+    'join-title':'¿Tienes un Negocio en Scorpion Bay?',
+    'join-sub':'Aparece en el directorio, llega a cada visitante que planea su viaje y conviértete en el primer lugar que encuentran. Listados destacados disponibles.',
+  };
+  // stats labels (nums stay)
+  ['Olas de Derecha de Clase Mundial','Mejor Temporada de Surf','Desde el Aeropuerto de Loreto','Aventura 100% Sin Conexión']
+    .forEach((v,i)=> ES['stat-'+i+'-label']=v);
+  // highlights  [tag, title, desc]
+  [['Surf','Point Breaks de Clase Mundial','Cuatro points de derecha — largas olas de verano que pueden conectarse por más de un minuto.'],
+   ['Pesca','Pesca en Panga','Jurel, dorado, atún y corvina con pescadores locales saliendo de la bahía.'],
+   ['Cuatrimoto','Aventuras en Cuatrimoto','Playas, senderos del desierto, los fingers y la desembocadura sobre cuatro ruedas.'],
+   ['Comer','Tacos y Cantinas','Tacos de pescado, cervezas frías y las legendarias cantinas del campamento de surf.'],
+   ['Hospedaje','Dónde Hospedarse','El Surf Hotel, la Cantina & Campground, casas y campamento en la playa.']]
+   .forEach((h,i)=>{ ES['hl-'+i+'-tag']=h[0]; ES['hl-'+i+'-title']=h[1]; ES['hl-'+i+'-desc']=h[2]; });
+  // ATV options [name, desc] + price html + pills
+  [['Renta 1 Día','Un día completo en las dunas y la playa'],
+   ['Renta 3 Días','Ideal para un fin de semana largo'],
+   ['Renta 7 Días','Una semana completa de exploración'],
+   ['Tour Guiado al Desierto','Guía + miradores y lugares escondidos']]
+   .forEach((o,i)=>{ ES['atv-opt-'+i+'-name']=o[0]; ES['atv-opt-'+i+'-desc']=o[1]; });
+  ['$88 <small>/ día</small>','$65 <small>/ día</small>','$55 <small>/ día</small>','$155 <small>/ día</small>']
+   .forEach((v,i)=> ES['atv-opt-'+i+'-price']=v);
+  ['Casco y goggles','Plática de seguridad','Mapa de senderos','Gasolina para empezar','Entrega local gratis']
+   .forEach((p,i)=> ES['atv-pill-'+i]=p);
+  // Storage options (pfx 'stor')
+  [['Vehículo / Camioneta','Lote seguro, ideal por temporada'],
+   ['Lancha y Remolque','Espacio exterior asegurado'],
+   ['Tablas / Equipo','Locker interior, a la sombra'],
+   ['Paquete de Temporada','6 meses, paga por adelantado y ahorra']]
+   .forEach((o,i)=>{ ES['stor-opt-'+i+'-name']=o[0]; ES['stor-opt-'+i+'-desc']=o[1]; });
+  ['$90 <small>/ mes</small>','$120 <small>/ mes</small>','$35 <small>/ mes</small>','$480 <small>/ 6 meses</small>']
+   .forEach((v,i)=> ES['stor-opt-'+i+'-price']=v);
+  ['Cercado y vigilado','Acceso 24/7','Encargado en sitio','Términos flexibles','Descuentos por largo plazo']
+   .forEach((p,i)=> ES['stor-pill-'+i]=p);
+  // fishing seasons [name, when]
+  [['Jurel','Nov – Abr'],['Dorado / Atún','Verano – Otoño'],['Cabrilla y Corvina','Todo el año'],['Langosta (temporada)','Oct – Mar']]
+   .forEach((f,i)=>{ ES['fish-'+i+'-name']=f[0]; ES['fish-'+i+'-when']=f[1]; });
+  // NOTE: directory listing translations now live INLINE on each SITE.listings
+  // entry (`es:{type,name,desc,price}`) so adding/removing trips never breaks the
+  // toggle — renderDir() reads l.es directly. (No index-based map to keep in sync.)
+
+  // directory filter-tab labels (rendered from SITE.dirCategories) + listing prices
+  const ES_CATS = ['Todo','Dónde Hospedarse','Comer y Beber','Actividades','Servicios Esenciales'];
+  const PRICE_ES = {
+    'Rooms from $104':'Habitaciones desde $104',
+    'Camping from 200 MXN':'Camping desde 200 MXN',
+    'From $65 / day':'Desde $65 / día',
+    'Ask for rates':'Precio a consultar',
+    'From $35 / mo':'Desde $35 / mes',
+  };
+  // map pins {name?, cat}
+  const PINS_ES = [
+    { cat:'Nuestro Negocio · reserva aquí' },
+    { cat:'Surf · tranquilo, para principiantes' },
+    { cat:'Surf · el más constante (campamento)' },
+    { cat:'Surf · rápido y hueco, avanzado' },
+    { cat:'Surf · más grande y expuesto' },
+    { cat:'Hospedaje · en el pueblo' },
+    { cat:'Hospedaje / Comida · sobre Second Point' },
+    { cat:'Comida · tacos y tablas' },
+    { name:'Faro de Punta Pequeña', cat:'Punto de Referencia' },
+  ];
+
+  // ---- Static chrome: [selector, es | [es,...], mode]  (mode: undefined=text, 'ph', 'html') ----
+  const CHROME = [
+    // nav
+    ['#nav .nav-links a[href="#highlights"]','Explora'],
+    ['#nav .nav-links a[href="#atv"]','Cuatrimotos'],
+    ['#nav .nav-links a[href="#storage"]','Almacenaje'],
+    ['#nav .nav-links a[href="#directory"]','Directorio'],
+    ['#nav .nav-links a[href="#map-section"]','Mapa'],
+    ['#nav .nav-links a[href="#community"]','Comunidad'],
+    ['#nav .nav-links a[href="#join"]','Planea tu Viaje'],
+    // hero
+    ['#hero a.btn-primary','Explorar Actividades'],
+    ['#hero a.btn-secondary','Reservar Aventuras'],
+    // highlights head
+    ['#highlights .eyebrow','Lo Mejor del Lugar'],
+    ['#highlights .section-title','Todo Scorpion Bay'],
+    ['#highlights .section-sub','Desde point breaks de fama mundial hasta senderos del desierto y mariscos fresquísimos — esto es lo que hace inolvidable a San Juanico.'],
+    // ATV
+    ['#atv .eyebrow','Renta de Cuatrimotos Scorpion Bay'],
+    ['#atv h4','Reserva tu Cuatrimoto Hoy'],
+    ['#atv form .tos-row span','He leído y acepto los <a href="#" data-tos>Términos y Exención de Responsabilidad</a>.','html'],
+    ['#atv form button[type="submit"]','Reserva tu Cuatrimoto →'],
+    ['#atv input[name="name"]','Tu nombre','ph'],
+    ['#atv input[name="phone"]','Teléfono / WhatsApp','ph'],
+    ['#atv input[name="email"]','Correo electrónico','ph'],
+    ['#atv input[name="dates"]','Fechas (ej. 12–14 mar)','ph'],
+    ['#atv input[name="riders"]','# de personas','ph'],
+    ['#atv textarea[name="message"]','¿Qué paquete? ¿Alguna pregunta?','ph'],
+    // parallax
+    ['#parallax1 .peyebrow','Una Costa. Aventura Sin Fin.'],
+    ['#parallax1 a.btn-primary','Ver el Directorio'],
+    // storage
+    ['#storage .eyebrow','Almacenaje Scorpion Bay'],
+    ['#storage h4','Consulta Disponibilidad'],
+    ['#storage form .tos-row span','He leído y acepto los <a href="#" data-tos>Términos</a>.','html'],
+    ['#storage form button[type="submit"]','Consultar Disponibilidad →'],
+    ['#storage input[name="name"]','Tu nombre','ph'],
+    ['#storage input[name="phone"]','Teléfono / WhatsApp','ph'],
+    ['#storage input[name="email"]','Correo electrónico','ph'],
+    ['#storage input[name="duration"]','¿Por cuánto tiempo?','ph'],
+    ['#storage textarea[name="message"]','Cuéntanos qué necesitas guardar','ph'],
+    ['#storage select[name="type"] option', ['¿Qué vas a guardar?','Vehículo / Camioneta','Lancha / Remolque','Tablas / Equipo','Temporada / Otro']],
+    // directory head
+    ['#directory .eyebrow','Directorio Turístico'],
+    ['#directory .section-title','Encuentra Todo en San Juanico'],
+    ['#directory .section-sub','Negocios locales, verificados y listos para recibirte. Filtra por lo que buscas.'],
+    // map head
+    ['#map-section .eyebrow','Mapa Interactivo'],
+    ['#map-section .section-title','Todo en el Mapa'],
+    ['#map-section .section-sub','Spots de surf, nuestras ubicaciones de cuatrimotos y almacenaje, hoteles, restaurantes y rampas para lanchas — todo en un solo lugar.'],
+    ['#mapLegend h4','Puntos de Interés'],
+    // community
+    ['#community .eyebrow','La Comunidad'],
+    ['#community .section-title','La Vida en Scorpion Bay'],
+    ['#community .info-card h4', ['🏄 Reporte de Surf','🎣 Temporadas de Pesca','📅 Eventos y Temporada']],
+    // join
+    ['#join .eyebrow','Para Negocios Locales'],
+    ['#join input[name="business"]','Nombre del negocio','ph'],
+    ['#join input[name="name"]','Tu nombre','ph'],
+    ['#join input[name="phone"]','Teléfono / WhatsApp','ph'],
+    ['#join input[name="email"]','Correo electrónico','ph'],
+    ['#join textarea[name="message"]','Cuéntanos sobre tu negocio','ph'],
+    ['#join button[type="submit"]','Publicar mi Negocio →'],
+    // footer
+    ['.footer-brand p','La guía definitiva de Scorpion Bay (San Juanico), Baja California Sur. Surf · Pesca · Cuatrimoto · Explora.'],
+    ['.footer-col h5', ['Explora','Nuestros Negocios','Contáctanos']],
+    ['.footer-grid .footer-col:nth-child(2) a', ['Actividades','Dónde Hospedarse','Comer y Beber','Mapa']],
+    ['.footer-grid .footer-col:nth-child(3) a', ['Renta de Cuatrimotos','Almacenaje','Publica tu Negocio']],
+    ['.footer-bottom span', ['© <span id="year">2026</span> Scorpion Bay Baja. Todos los derechos reservados.','Hecho con la plataforma turística <a href="https://blueoceanstandard.com" target="_blank" rel="noopener">Blue Ocean Standard</a>.'], 'html'],
+    // booking modal
+    ['#bookModal .eyebrow','Reservar'],
+    ['#bookModal input[name="name"]','Nombre completo','ph'],
+    ['#bookModal input[name="phone"]','Teléfono / WhatsApp','ph'],
+    ['#bookModal input[name="email"]','Correo electrónico','ph'],
+    ['#bookModal input[name="dates"]','Fecha(s) preferida(s)','ph'],
+    ['#bookModal input[name="people"]','# personas / unidades','ph'],
+    ['#bookModal textarea[name="notes"]','¿Qué opción? ¿Algo que debamos saber?','ph'],
+    ['#bookModal .tos-row span','He leído y acepto los <a href="#" data-tos>Términos y Exención de Responsabilidad</a>.','html'],
+    // terms modal
+    ['#tosModal .eyebrow','Por favor lee'],
+    ['#tosTitle','Términos y Exención de Responsabilidad'],
+    ['#tosOk','Entendido'],
+    // edit bar
+    ['#edit-bar > span:first-child','✏️ Modo edición — haz clic en cualquier texto o foto para cambiarlo'],
+    ['#editSave','Guardar cambios'],
+    ['#editReset','Restablecer'],
+    ['#editExit','Salir'],
+  ];
+
+  // ---- JS-set UI strings (used by render + handlers) ----
+  const UI = {
+    'book.sub.pay':   { en:'Reserve and pay securely — your spot is confirmed at checkout.', es:'Reserva y paga de forma segura — tu lugar queda confirmado al pagar.' },
+    'book.sub.req':   { en:"Send your request and we'll confirm availability and price.", es:'Envía tu solicitud y te confirmamos disponibilidad y precio.' },
+    'book.submit.pay':{ en:'Reserve & Pay →', es:'Reservar y Pagar →' },
+    'book.submit.req':{ en:'Request to Book →', es:'Solicitar Reserva →' },
+    'cta.reserve':    { en:'Reserve', es:'Reservar' },
+    'cta.deposit':    { en:'deposit', es:'depósito' },
+    'cta.reservePay': { en:'Reserve & Pay', es:'Reservar y Pagar' },
+    'cta.checkAvail': { en:'Check Availability →', es:'Consultar Disponibilidad →' },
+    'cta.localFav':   { en:'♥ Local favorite — we love this spot', es:'♥ Favorito local — nos encanta este lugar' },
+    'dir.empty':      { en:'No listings yet — be the first! Scroll down to add your business.', es:'Aún no hay listados — ¡sé el primero! Baja para agregar tu negocio.' },
+    'web':            { en:'Website', es:'Sitio web' },
+    'status.thanks':  { en:"✓ Thank you! We'll confirm shortly.", es:'✓ ¡Gracias! Te confirmamos en breve.' },
+    'status.reqSent': { en:"✓ Request sent! We'll confirm shortly.", es:'✓ ¡Solicitud enviada! Te confirmamos en breve.' },
+    'status.checkout':{ en:'✓ Taking you to secure checkout…', es:'✓ Te llevamos al pago seguro…' },
+    'status.email':   { en:'✓ Opening your email to send…', es:'✓ Abriendo tu correo para enviar…' },
+  };
+  const t = k => ((UI[k]||{})[LANG] != null ? UI[k][LANG] : (UI[k]||{}).en != null ? UI[k].en : k);
+
+  // ---- apply / restore (baseline captured from the English DOM on first touch) ----
+  const I18N_BASE = new Map();
+  function applyEl(el, val, mode){
+    if (!el) return;
+    const m = mode || 'text';
+    if (!I18N_BASE.has(el))
+      I18N_BASE.set(el, m === 'ph' ? el.getAttribute('placeholder') : (m === 'html' ? el.innerHTML : el.textContent));
+    const out = (LANG === 'es' && val != null) ? val : I18N_BASE.get(el);
+    if (out == null) return;
+    if (m === 'ph') el.setAttribute('placeholder', out);
+    else if (m === 'html') el.innerHTML = out;
+    else el.textContent = out;
+  }
+  function applyI18n(root){
+    root = root || document;
+    // 1) slug-keyed nodes (covers prose + everything rendered from SITE)
+    root.querySelectorAll('[data-edit],[data-i18n]').forEach(el =>
+      applyEl(el, ES[el.dataset.edit || el.dataset.i18n], 'html'));
+    if (root !== document) return;
+    // 2) static chrome
+    CHROME.forEach(([sel, val, mode]) => {
+      document.querySelectorAll(sel).forEach((el, i) =>
+        applyEl(el, Array.isArray(val) ? val[i] : val, mode));
+    });
+    // 3) specials: scroll hint + directory tabs (text node sits after an icon span)
+    const sh = $('.scroll-hint');
+    if (sh && sh.lastChild && sh.lastChild.nodeType === 3) {
+      if (!I18N_BASE.has(sh)) I18N_BASE.set(sh, sh.lastChild.nodeValue);
+      sh.lastChild.nodeValue = (LANG === 'es') ? 'Desliza' : I18N_BASE.get(sh);
+    }
+    $$('.dir-tab').forEach((b, i) => {
+      if (!b.lastChild || b.lastChild.nodeType !== 3) return;
+      const en = (SITE.dirCategories[i] || {}).label || b.lastChild.nodeValue;
+      b.lastChild.nodeValue = (LANG === 'es') ? (ES_CATS[i] || en) : en;
+    });
+  }
+  function setLang(lang){
+    LANG = (lang === 'es') ? 'es' : 'en';
+    try { localStorage.setItem(LANG_KEY, LANG); } catch(_) {}
+    document.documentElement.lang = LANG;
+    applyI18n(document);
+    if (typeof renderDir === 'function') renderDir();   // directory text + CTAs in LANG
+    updateMapLang();                                    // legend + popups
+    const lbl = $('#langLabel'); if (lbl) lbl.textContent = (LANG === 'es') ? 'EN' : 'ES';
+    const btn = $('#langToggle'); if (btn) btn.setAttribute('aria-label', LANG === 'es' ? 'Switch to English' : 'Cambiar a Español');
+  }
+
   // ---- Hero media ----
   (function heroMedia(){
     const m = $('#heroMedia'); const h = SITE.hero;
@@ -989,37 +1291,43 @@
   function renderDir(){
     const grid = $('#dirGrid');
     const items = SITE.listings.map((l,idx)=>({l,idx})).filter(x => activeCat==='all' || x.l.cat===activeCat);
-    if (!items.length){ grid.innerHTML = `<div class="dir-empty">No listings yet — be the first! Scroll down to add your business.</div>`; return; }
+    if (!items.length){ grid.innerHTML = `<div class="dir-empty">${esc(t('dir.empty'))}</div>`; return; }
     grid.innerHTML = items.map(({l,idx}) => {
+      const eL = (LANG === 'es' && l.es) ? l.es : null;
+      const dType = eL && eL.type ? eL.type : l.type;
+      const dName = eL && eL.name ? eL.name : l.name;
+      const dDesc = eL && eL.desc ? eL.desc : l.desc;
+      const dPrice = eL && eL.price != null ? eL.price : (LANG === 'es' && PRICE_ES[l.price] ? PRICE_ES[l.price] : l.price);
       const phone = l.phone ? `<span>📞 <a href="tel:${esc(l.phone)}">${esc(l.phone)}</a></span>` : '';
-      const web = l.web && !l.web.startsWith('#') ? `<span>🔗 <a href="${esc(l.web)}" target="_blank" rel="noopener">Website</a></span>` : '';
-      const price = l.price ? `<span class="dc-price">${esc(l.price)}</span>` : '';
+      const web = l.web && !l.web.startsWith('#') ? `<span>🔗 <a href="${esc(l.web)}" target="_blank" rel="noopener">${esc(t('web'))}</a></span>` : '';
+      const price = dPrice ? `<span class="dc-price">${esc(dPrice)}</span>` : '';
       // CTA by monetization tier
       let cta = '';
       if (l.tier === 'book' && l.ours) {
         const dl = SITE.booking.depositLink;
         cta = dl
-          ? `<a class="dc-btn" href="${esc(depositHref(l.name))}" target="_blank" rel="noopener">Reserve · ${esc(SITE.booking.depositAmount || '$25')} deposit →</a>`
-          : `<button class="dc-btn" data-book="${idx}">${esc(l.bookLabel || 'Reserve & Pay')} →</button>`;
+          ? `<a class="dc-btn" href="${esc(depositHref(l.name))}" target="_blank" rel="noopener">${esc(t('cta.reserve'))} · ${esc(SITE.booking.depositAmount || '$25')} ${esc(t('cta.deposit'))} →</a>`
+          : `<button class="dc-btn" data-book="${idx}">${esc(l.bookLabel || t('cta.reservePay'))} →</button>`;
       } else if (l.tier === 'book' && l.book) {
-        cta = `<a class="dc-btn ghost" href="${esc(l.book)}" target="_blank" rel="noopener">Check Availability →</a>`;
+        cta = `<a class="dc-btn ghost" href="${esc(l.book)}" target="_blank" rel="noopener">${esc(t('cta.checkAvail'))}</a>`;
       } else if (l.tier === 'promo') {
-        cta = `<div class="dc-promo">♥ Local favorite — we love this spot</div>`;
+        cta = `<div class="dc-promo">${esc(t('cta.localFav'))}</div>`;
       }
       return `<div class="dir-card">
         <div class="dc-img" data-img="dir-${idx}" style="background-image:url('${esc(l.img)}')">
-          <span class="dc-type" data-edit="dir-${idx}-type">${esc(l.type)}</span>
+          <span class="dc-type" data-edit="dir-${idx}-type">${esc(dType)}</span>
           ${l.featured?'<span class="dc-feat">★ Featured</span>':''}
         </div>
         <div class="dc-body">
-          <div class="dc-head"><h3 data-edit="dir-${idx}-name">${esc(l.name)}</h3>${price}</div>
-          <p class="dc-desc" data-edit="dir-${idx}-desc">${esc(l.desc)}</p>
+          <div class="dc-head"><h3 data-edit="dir-${idx}-name">${esc(dName)}</h3>${price}</div>
+          <p class="dc-desc" data-edit="dir-${idx}-desc">${esc(dDesc)}</p>
           <div class="dc-meta">${phone}${web}</div>
           ${cta}
         </div>
       </div>`;
     }).join('');
     hydrate(grid);   // restore saved edits + re-enable editing after each (re)render
+    applyI18n(grid); // re-apply Spanish (if active) after each directory (re)render
   }
   $('#dirTabs').addEventListener('click', e => {
     const t = e.target.closest('.dir-tab'); if(!t) return;
@@ -1075,6 +1383,22 @@
       const it = e.target.closest('.legend-item'); if(!it) return;
       const i = +it.dataset.i; map.setView(SITE.pins[i].coords, 16); markers[i].openPopup();
     });
+
+    // bilingual: refresh popups + legend text when the language flips
+    updateMapLang = function(){
+      SITE.pins.forEach((p, i) => {
+        const es = PINS_ES[i] || {};
+        const name = (LANG === 'es' && es.name) ? es.name : p.name;
+        const cat  = (LANG === 'es' && es.cat)  ? es.cat  : p.cat;
+        if (markers[i]) markers[i].setPopupContent(`<b>${esc(name)}</b><br>${esc(cat)}`);
+      });
+      $$('#mapLegend .legend-item').forEach(it => {
+        const i = +it.dataset.i, p = SITE.pins[i] || {}, es = PINS_ES[i] || {};
+        const nEl = $('.li-name', it), cEl = $('.li-cat', it);
+        if (nEl) nEl.textContent = (LANG === 'es' && es.name) ? es.name : p.name;
+        if (cEl) cEl.textContent = (LANG === 'es' && es.cat)  ? es.cat  : p.cat;
+      });
+    };
   })();
 
   /* ════════════════════════════════════════════════════════════════════════
@@ -1128,11 +1452,11 @@
   function openBooking(l){
     currentBooking = l;
     const link = payLink(l.payLinkKey);
-    $('#bookTitle').textContent = l.name;
-    $('#bookSub').textContent = (l.price ? l.price + ' · ' : '') +
-      (link ? 'Reserve and pay securely — your spot is confirmed at checkout.'
-            : "Send your request and we'll confirm availability and price.");
-    $('#bookSubmit').textContent = (link ? 'Reserve & Pay →' : 'Request to Book →');
+    const eb = (LANG === 'es' && l.es) ? l.es : null;
+    $('#bookTitle').textContent = (eb && eb.name) ? eb.name : l.name;
+    const lp = (eb && eb.price != null) ? eb.price : (l.price ? ((LANG === 'es' && PRICE_ES[l.price]) ? PRICE_ES[l.price] : l.price) : '');
+    $('#bookSub').textContent = (lp ? lp + ' · ' : '') + (link ? t('book.sub.pay') : t('book.sub.req'));
+    $('#bookSubmit').textContent = (link ? t('book.submit.pay') : t('book.submit.req'));
     const st = $('#bookForm .form-status'); if (st) st.textContent = '';
     bookModal.hidden = false; document.body.style.overflow = 'hidden';
   }
@@ -1263,6 +1587,18 @@
     });
     $('#editExit').addEventListener('click', () => { location.href = location.pathname; });
   }
+
+  /* ════════════════════════════════════════════════════════════════════════
+     LANGUAGE TOGGLE — inject button styles, wire the click, apply saved choice
+     ════════════════════════════════════════════════════════════════════════ */
+  (function initLang(){
+    const s = document.createElement('style');
+    s.textContent = '.lang-toggle{display:inline-flex;align-items:center;gap:6px;background:rgba(240,167,60,.15);color:#f0a73c;border:1px solid rgba(240,167,60,.45);border-radius:999px;padding:7px 12px;font-family:Inter,system-ui,sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.6px;cursor:pointer;margin-left:18px;transition:background .2s,transform .2s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);line-height:1}.lang-toggle:hover{background:rgba(240,167,60,.28);transform:translateY(-1px)}.lang-toggle .lt-flag{font-size:13px}@media(max-width:860px){.lang-toggle{margin-left:auto;margin-right:12px;padding:6px 10px}}';
+    document.head.appendChild(s);
+    const b = $('#langToggle');
+    if (b) b.addEventListener('click', () => setLang(LANG === 'es' ? 'en' : 'es'));
+    setLang(LANG);   // apply persisted language (no-op visual change when 'en')
+  })();
   </script>
 </body>
 </html>

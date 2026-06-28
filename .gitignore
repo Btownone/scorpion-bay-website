@@ -3,3 +3,5 @@
 *.mov
 # internal handoff/planning notes — keep out of the public site repo
 V3-TENANT-PLAN.md
+BOS-EDITOR-PR.md
+V3-BUILDER-BRIEF.md
