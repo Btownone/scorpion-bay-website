@@ -728,7 +728,7 @@
       // checkout (deposit lands in the account; see sales in the Stripe
       // dashboard). Each activity is tagged via client_reference_id so you can
       // tell which activity each deposit was for. Blank = email-request fallback.
-      depositLink: "",                 // TODO: paste the $25 Stripe Payment Link
+      depositLink: "https://buy.stripe.com/eVq5kv61a0HC5BK6RH7Vm01",  // $25 deposit — Stripe Payment Link (live)
       // (Per-activity links later — when deposits differ per activity.)
       payLinks: {
         atv: "",                       // Scorpion Bay Quad Rentals
@@ -1434,12 +1434,14 @@
     if (!b || EDITING) return;          // don't trigger bookings while editing text
     openBooking(SITE.listings[+b.dataset.book]);
   });
-  // ATV / Storage banner "Reserve" buttons → open the same booking popup
+  // ATV / Storage banner "Reserve" buttons → $25 Stripe deposit (or popup if no link set)
   document.addEventListener('click', e => {
     const b = e.target.closest('[data-book-key]');
     if (!b || EDITING) return;
     const l = SITE.listings.find(x => x.payLinkKey === b.dataset.bookKey && x.ours);
-    if (l) openBooking(l);
+    if (!l) return;
+    if (SITE.booking.depositLink) window.open(depositHref(l.name), '_blank', 'noopener');
+    else openBooking(l);
   });
   // Any "Terms & Waiver" link, anywhere
   document.addEventListener('click', e => {
