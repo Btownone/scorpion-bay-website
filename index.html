@@ -503,26 +503,7 @@
         <h2 data-edit="atv-title">Explore Baja On Four Wheels</h2>
         <p class="lead" data-edit="atv-lead">Ride pristine beaches, desert trails, and hidden viewpoints. Our well-maintained fleet is ready for riders of every level — from first-timers to backcountry explorers.</p>
 
-        <div class="option-list" id="atvOptions"></div>
-        <div class="pill-row" id="atvIncludes"></div>
-
-        <div class="safety-note">
-          <span class="ico">⛑️</span>
-          <span data-edit="atv-safety">Helmets, safety briefing, and trail map included with every rental. Valid driver's license required. Guided tours available for groups.</span>
-        </div>
-
-        <h4 style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;margin-bottom:14px;">Reserve Your ATV Today</h4>
-        <form class="lead-form" data-form="ATV Rental Inquiry" data-paylink="atv">
-          <input name="name" placeholder="Your name" required />
-          <input name="phone" placeholder="Phone / WhatsApp" required />
-          <input class="full" name="email" type="email" placeholder="Email" required />
-          <input name="dates" placeholder="Dates (e.g. Mar 12–14)" />
-          <input name="riders" type="number" min="1" placeholder="# of riders" />
-          <textarea class="full" name="message" placeholder="Which package? Any questions?"></textarea>
-          <label class="tos-row full"><input type="checkbox" name="tos" required /> <span>I have read and agree to the <a href="#" data-tos>Terms &amp; Liability Waiver</a>.</span></label>
-          <button class="btn-primary full" type="submit">Reserve Your ATV →</button>
-          <div class="form-status"></div>
-        </form>
+        <button class="btn-primary" type="button" data-book-key="atv" data-i18n="atvReserveBtn">Reserve Your ATV →</button>
       </div>
     </div>
   </section>
@@ -549,27 +530,7 @@
         <h2 data-edit="storage-title">Secure Storage, Year-Round Peace of Mind</h2>
         <p class="lead" data-edit="storage-lead">Whether you're storing a vehicle for the season, a boat, surfboards, or gear between trips — keep it safe, secure, and ready for your next Baja adventure.</p>
 
-        <div class="option-list" id="storageOptions"></div>
-        <div class="pill-row" id="storageIncludes"></div>
-
-        <h4 style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;margin-bottom:14px;">Request Availability</h4>
-        <form class="lead-form" data-form="Storage Availability Request" data-paylink="storage">
-          <input name="name" placeholder="Your name" required />
-          <input name="phone" placeholder="Phone / WhatsApp" required />
-          <input class="full" name="email" type="email" placeholder="Email" required />
-          <select name="type">
-            <option value="">What are you storing?</option>
-            <option>Vehicle / Truck</option>
-            <option>Boat / Trailer</option>
-            <option>Surfboards / Gear</option>
-            <option>Seasonal / Other</option>
-          </select>
-          <input name="duration" placeholder="How long?" />
-          <textarea class="full" name="message" placeholder="Tell us what you need to store"></textarea>
-          <label class="tos-row full"><input type="checkbox" name="tos" required /> <span>I have read and agree to the <a href="#" data-tos>Terms</a>.</span></label>
-          <button class="btn-ghost full" type="submit">Request Availability →</button>
-          <div class="form-status"></div>
-        </form>
+        <button class="btn-primary" type="button" data-book-key="storage" data-i18n="storageReserveBtn">Reserve Storage →</button>
       </div>
     </div>
   </section>
@@ -808,7 +769,7 @@
     highlights: [
       { icon:"🏄", tag:"Surf",     title:"World-Class Point Breaks", desc:"Four right-hand points — long summer rides that can link for over a minute.", img:"https://images.unsplash.com/photo-1455729552865-3658a5d39692?q=80&w=1400", link:"#community" },
       { icon:"🎣", tag:"Fish",     title:"Panga Fishing",    desc:"Yellowtail, dorado, tuna & corvina with local fishermen out of the bay.", img:"https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1400", link:"#directory" },
-      { icon:"🏍️", tag:"Ride",     title:"Quad & ATV Adventures",      desc:"Beaches, desert trails, the fingers & the rivermouth on four wheels.",      img:"https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1400", link:"#atv" },
+      { icon:"🏜️", tag:"Ride",     title:"Quad & ATV Adventures",      desc:"Beaches, desert trails, the fingers & the rivermouth on four wheels.",      img:"assets/atv.jpg", link:"#atv" },
       { icon:"🌮", tag:"Eat",      title:"Tacos & Cantinas",          desc:"Fish tacos, cold cervezas and the legendary surf-camp cantinas.",        img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1400", link:"#directory" },
       { icon:"🏝️", tag:"Stay",     title:"Places to Stay",      desc:"The Surf Hotel, the Cantina & Campground, casas and beach camping.",       img:"https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1400", link:"#directory" },
     ],
@@ -816,7 +777,7 @@
     // ── BUSINESS: ATV RENTALS (Zach's — Scorpion Bay Storage & Quad Rentals) ──
     atv: {
       payLinkKey: "atv",   // → booking.payLinks.atv (Stripe). Blank = email the request.
-      image: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1600",
+      image: "assets/atv.jpg",
       options: [
         { name:"1-Day Rental",        desc:"One full day on the dunes & beach",  price:"$88",  unit:"/ day" },
         { name:"3-Day Rental",        desc:"Best for a long weekend",            price:"$65",  unit:"/ day" },
@@ -858,7 +819,7 @@
         es:{ type:"Clases de Surf", name:"Clases de Surf y Renta de Tablas", desc:"Tablas, SUPs y clases para First y Second Point — todos los niveles, desde tu primera ola.", price:"Precio a consultar" } },
       { cat:"activity", type:"Panga Fishing", name:"Panga Fishing Trips", desc:"Half-day panga trips for yellowtail, dorado, tuna & corvina with local captains. We arrange it for you.", img:"https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1200", featured:true, tier:"book", ours:true, payLinkKey:"fishing", price:"Ask for rates",
         es:{ type:"Pesca en Panga", name:"Viajes de Pesca en Panga", desc:"Viajes en panga de medio día para jurel, dorado, atún y corvina con capitanes locales. Lo organizamos por ti.", price:"Precio a consultar" } },
-      { cat:"activity", type:"Quad & ATV Rentals", name:"Scorpion Bay Quad Rentals", desc:"Quads & side-by-sides for the beaches, fingers & rivermouth — 1-day, multi-day & guided desert tours.", img:"https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1200", featured:true, tier:"book", ours:true, payLinkKey:"atv", price:"From $55 / day", web:"#atv",
+      { cat:"activity", type:"Quad & ATV Rentals", name:"Scorpion Bay Quad Rentals", desc:"Quads & side-by-sides for the beaches, fingers & rivermouth — 1-day, multi-day & guided desert tours.", img:"assets/atv.jpg", featured:true, tier:"book", ours:true, payLinkKey:"atv", price:"From $55 / day", web:"#atv",
         es:{ type:"Renta de Cuatrimotos", name:"Renta de Cuatrimotos Scorpion Bay", desc:"Cuatrimotos y side-by-sides para las playas, los fingers y la desembocadura — 1 día, varios días y tours guiados al desierto.", price:"Desde $55 / día" } },
       { cat:"activity", type:"Fossil Tour", name:"Fossilized Shark-Teeth Hunting Tour", desc:"8-hour guided hunt for your own fossilized shark teeth — Megalodon country — lunch included. Min 2 people.", img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200", featured:true, tier:"book", ours:true, price:"From $75 / person",
         es:{ type:"Tour de Fósiles", name:"Tour de Dientes de Tiburón Fosilizados", desc:"Búsqueda guiada de 8 horas para encontrar tus propios dientes de tiburón fosilizados — tierra de Megalodón — comida incluida. Mínimo 2 personas.", price:"Desde $75 / persona" } },
@@ -1024,6 +985,8 @@
     'events':'La temporada de surf es máxima en verano; el invierno es más tranquilo e ideal para la pesca y los paseos en cuatrimoto. Ven preparado: el pueblo es solo en efectivo (no hay cajero), no hay Pemex (la gasolina se vende en el pueblo) y no hay servicio médico completo — llena el tanque y abastécete en el camino.',
     'join-title':'¿Tienes un Negocio en Scorpion Bay?',
     'join-sub':'Aparece en el directorio, llega a cada visitante que planea su viaje y conviértete en el primer lugar que encuentran. Listados destacados disponibles.',
+    'atvReserveBtn':'Reserva tu Cuatrimoto →',
+    'storageReserveBtn':'Reservar Almacenaje →',
   };
   // stats labels (nums stay)
   ['Olas de Derecha de Clase Mundial','Mejor Temporada de Surf','Desde el Aeropuerto de Loreto','Aventura 100% Sin Conexión']
@@ -1275,10 +1238,8 @@
       <div class="o-price" data-edit="${pfx}-opt-${i}-price">${esc(o.price)} <small>${esc(o.unit)}</small></div>
     </div>`;
   const pillHTML = (p,i,pfx) => `<span class="pill" data-edit="${pfx}-pill-${i}">${esc(p)}</span>`;
-  $('#atvOptions').innerHTML     = SITE.atv.options.map((o,i)=>optHTML(o,i,'atv')).join('');
-  $('#atvIncludes').innerHTML    = SITE.atv.includes.map((p,i)=>pillHTML(p,i,'atv')).join('');
-  $('#storageOptions').innerHTML = SITE.storage.options.map((o,i)=>optHTML(o,i,'stor')).join('');
-  $('#storageIncludes').innerHTML= SITE.storage.includes.map((p,i)=>pillHTML(p,i,'stor')).join('');
+  // ATV & Storage are now simple banners — pricing/options live in the booking
+  // popup + directory, not on the homepage floors. (optHTML/pillHTML unused.)
 
   // ---- Parallax background ----
   $('#parallax1').style.backgroundImage = `url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2000')`;
@@ -1472,6 +1433,13 @@
     const b = e.target.closest('[data-book]');
     if (!b || EDITING) return;          // don't trigger bookings while editing text
     openBooking(SITE.listings[+b.dataset.book]);
+  });
+  // ATV / Storage banner "Reserve" buttons → open the same booking popup
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-book-key]');
+    if (!b || EDITING) return;
+    const l = SITE.listings.find(x => x.payLinkKey === b.dataset.bookKey && x.ours);
+    if (l) openBooking(l);
   });
   // Any "Terms & Waiver" link, anywhere
   document.addEventListener('click', e => {
